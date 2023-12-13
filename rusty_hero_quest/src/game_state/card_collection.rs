@@ -1,10 +1,13 @@
 use std::collections::VecDeque;
+use rand::seq::SliceRandom; // Import the trait for shuffle
+use rand::thread_rng;       // Import thread_rng for a random number generator
+
 
 
 pub const MAX_CARD_VALUE: u32 = 13;
 
 pub struct CardCollection {
-    cards: VecDeque<Card>,
+    pub cards: VecDeque<Card>,
 }
 
 impl CardCollection {
@@ -29,10 +32,40 @@ impl CardCollection {
     }
 
     pub fn shuffle(&mut self) {
-
-        // self.cards.shuffle();
+        let mut rng = thread_rng(); // Create a random number generator
+        // must copy into a vec, do the shuffle, then move back into a VecDeque
+        let mut cards_vec: Vec<_> = self.cards.drain(..).collect();
+        cards_vec.shuffle(&mut rng);
+        self.cards = cards_vec.into();
     }
+    pub fn populate_self_with_fresh_cards(&mut self, card_count: u32) {        
+        let mut deck = Vec::new();
+        let count_each_type = card_count / MAX_CARD_VALUE / 2; // 52 by 13 by 2 is 2 cards for each value/type
+        for _iteration in 0..count_each_type {
+            // should hit this twice
+            for i in 1..MAX_CARD_VALUE + 1 {
+                let good_card = Card {typ: CardType::Good, value: i};
+                let bad_card = Card {typ: CardType::Bad, value: i};
+                deck.push(good_card);
+                deck.push(bad_card);               
+            }
+        }
 
+        self.cards = deck.into();
+    }
+    
+    pub fn print_collection_contents(&mut self) {
+        println!("contents:\n\tValue:\tType:");
+        for card in &self.cards {
+            // let typ = card.typ;
+            let typeStr = if let CardType::Good = card.typ {
+                "Good"
+            } else {
+                "Bad"
+            };
+            println!("\t {}\t{}",card.value,typeStr);
+        }
+    }
     // Add other helper functions as needed
     // For example, you might want functions to:
     // - Peek at the next card without removing it
@@ -52,3 +85,9 @@ pub enum CardType {
     Good,
     Bad,
 }
+
+
+
+
+
+
