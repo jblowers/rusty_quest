@@ -31,6 +31,13 @@ impl CardCollection {
         self.cards.pop_front()
     }
 
+    pub fn get_cards_iterable(&mut self) -> Vec<Card> {
+        // let coll_as_vec: Vec<Card> = self.cards.to_owned();
+        let coll_as_vec: Vec<Card> = self.cards.iter().cloned().collect::<Vec<Card>>();
+        return coll_as_vec;
+        // return self.cards.drain(..).collect(); // this might empty the internal cards list... if I just wanted to view them, might be a problem
+    }
+
     pub fn shuffle(&mut self) {
         let mut rng = thread_rng(); // Create a random number generator
         // must copy into a vec, do the shuffle, then move back into a VecDeque
@@ -80,10 +87,27 @@ pub struct Card {
     pub typ: CardType,
     pub value: u32,
 }
+impl Clone for Card {
+    fn clone(&self) -> Self {
+        Card {
+            typ: self.typ.clone(),
+            value: self.value,
+        }
+    }
+}
 
 pub enum CardType {
     Good,
     Bad,
+}
+
+impl Clone for CardType {
+    fn clone(&self) -> Self {
+        match *self {
+            CardType::Good => CardType::Good,
+            CardType::Bad => CardType::Bad,
+        }
+    }
 }
 
 
