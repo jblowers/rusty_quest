@@ -1,0 +1,52 @@
+name: Rust Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rust stable toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      - name: Run cargo test
+        run: cargo test --all
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: target/debug/test-results.xml
+
+  check-tests:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v3
+        with:
+          name: test-results
+          path: test-results.xml
+
+      - name: Parse test results
+        run: cargo test --all --show-output --no-run --color always --verbose | grep -F 'failures:'
+
+      - name: Fail if tests fail
+        if: steps.parse-test-results.outputs.failures > 0
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.actions.createStatus({
+              context: 'tests',
+              state: 'failure',
+              description: '❌ Tests failed, please fix before merging.'
+            })
+
