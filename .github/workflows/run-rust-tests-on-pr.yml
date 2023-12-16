@@ -15,9 +15,11 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
-
+      - name: cd to correct directory
+        run: cd /home/runner/work/rusty_quest/rusty_hero_quest
+        
       - name: Run cargo test
-        run: cargo test --all --cwd runner/work/rusty_quest
+        run: cargo test
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
@@ -49,4 +51,3 @@ jobs:
               state: 'failure',
               description: '❌ Tests failed, please fix before merging.'
             })
-
