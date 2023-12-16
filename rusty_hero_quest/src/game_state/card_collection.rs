@@ -74,7 +74,6 @@ impl CardCollection {
         }
     }
     // Add other helper functions as needed
-    // For example, you might want functions to:
     // - Peek at the next card without removing it
     // - Remove a specific card from the collection
     // - Sort the cards based on a specific criteria

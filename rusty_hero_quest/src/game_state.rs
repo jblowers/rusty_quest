@@ -7,25 +7,6 @@ pub mod player_state;
 use player_state::Player;
 
 
-
-// might need to go into a separate file ?
-// // Player data
-// struct Player {
-//     id: u32,
-//     name: String,
-//     position: u32,
-//     combat_skill: u8,
-//     defense_skill: u8,
-//     wounds: u8,
-//     equipment_combat_score: i32,
-//     equipment_defense_score: i32,
-//     ability_combat_score: i32,
-//     ability_defense_score: i32,
-//     hand: Vec<Card>,
-//     action_points: u8,
-// }
-
-
 // Equipment data
 // #[derive(Debug)]
 // TODO: This needs to be designed right (?)
