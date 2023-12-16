@@ -3,7 +3,6 @@ use rand::seq::SliceRandom; // Import the trait for shuffle
 use rand::thread_rng;       // Import thread_rng for a random number generator
 
 
-
 pub const MAX_CARD_VALUE: u32 = 13;
 
 pub struct CardCollection {
