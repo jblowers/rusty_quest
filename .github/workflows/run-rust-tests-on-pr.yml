@@ -9,42 +9,49 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Install Rust stable toolchain
-        uses: dtolnay/rust-toolchain@master
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          components: rustfmt, clippy
+          profile: minimal
+          override: true
+
       - name: Run cargo test
-        run: cd /home/runner/work/rusty_quest/rusty_quest/rusty_hero_quest; cargo test
+        run: cargo test
+
+      - name: Capture test output
+        run: cargo test -- --nocapture > test-results.txt || true
 
       - name: Upload test results
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: target/debug/test-results.xml
+          path: test-results.txt
 
   check-tests:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Download test results
         uses: actions/download-artifact@v3
         with:
           name: test-results
-          path: test-results.xml
+          path: .
 
-      - name: Parse test results
-        run: cargo test --all --show-output --no-run --color always --verbose | grep -F 'failures:'
-
-      - name: Fail if tests fail
-        if: steps.parse-test-results.outputs.failures > 0
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.actions.createStatus({
-              context: 'tests',
-              state: 'failure',
-              description: '❌ Tests failed, please fix before merging.'
-            })
+      - name: Check for test failures
+        id: check_failures
+        run: |
+          if grep -q 'test result: FAILED.' test-results.txt; then
+            echo "There are test failures."
+            exit 1
+          else
+            echo "All tests passed."
+          fi
