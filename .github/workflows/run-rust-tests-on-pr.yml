@@ -22,9 +22,11 @@ jobs:
 
       - name: Run cargo test
         run: cargo test
+        working-directory: ./rusty_hero_quest
 
       - name: Capture test output
         run: cargo test -- --nocapture > test-results.txt || true
+        working-directory: ./rusty_hero_quest
 
       - name: Upload test results
         if: always()
