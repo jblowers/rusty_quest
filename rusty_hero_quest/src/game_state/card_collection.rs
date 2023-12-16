@@ -82,6 +82,7 @@ impl CardCollection {
 
 
 // Card data
+#[derive(Debug)]
 pub struct Card {
     // id: u32,
     pub typ: CardType,
@@ -95,10 +96,25 @@ impl Clone for Card {
         }
     }
 }
+impl PartialEq for Card {
+    fn eq(&self, other: &Self) -> bool {
+        self.typ == other.typ && self.value == other.value
+    }
+}
 
+#[derive(Debug,Copy)]
 pub enum CardType {
     Good,
     Bad,
+}
+impl PartialEq for CardType {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (CardType::Good, CardType::Good) => true,
+            (CardType::Bad, CardType::Bad) => true,
+            _ => false,
+        }
+    }
 }
 
 impl Clone for CardType {

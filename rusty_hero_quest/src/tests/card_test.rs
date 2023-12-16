@@ -28,3 +28,47 @@ fn test_draw_card() {
 }
 
 
+#[test]
+fn test_is_empty() {
+    let mut coll = card_collection::CardCollection::new();
+    assert_eq!(coll.cards.len(), 0,"Cards in a new collection should be 0");
+    assert!(coll.is_empty());
+
+}
+
+
+#[test]
+fn test_add_card() {
+    let mut coll = card_collection::CardCollection::new();
+    let good = card_collection::CardType::Good;
+    let val = 10;
+    coll.add_card(card_collection::Card {typ:good, value: val});
+    assert_eq!(coll.cards.len(), 1, "Expect only 1 card in the deck");
+    // assert_eq!(coll.cards[0].typ,good);
+    assert_eq!(coll.cards[0].value,val);
+}
+
+#[test]
+fn test_shuffle_randomness() {
+    let mut coll = create_test_collection();
+    for _ in 0..1000 {
+        let mut deck = create_test_collection();
+        deck.shuffle();
+        assert_ne!(deck.get_cards_iterable(), create_test_collection().get_cards_iterable()); // Decks shouldn't be identical
+    }
+}
+
+fn create_test_collection() -> card_collection::CardCollection {
+    let mut coll = card_collection::CardCollection::new();
+    coll.populate_self_with_fresh_cards(CARD_COUNT as u32);
+    return coll;
+}
+
+#[test]
+fn test_shuffle_card_presence() {
+    let mut deck = create_test_collection();
+    deck.shuffle();
+    for card in create_test_collection().cards {
+        assert!(deck.cards.contains(&card)); // All cards should be present
+    }
+}
