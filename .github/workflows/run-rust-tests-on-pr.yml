@@ -18,7 +18,7 @@ jobs:
       - name: List directory contents of rusty_quest/rusty_quest
         run: ls -la /home/runner/work/rusty_quest/rusty_quest
       - name: cd to correct directory
-        run: cd /home/runner/work/rusty_quest/rusty_hero_quest
+        run: cd /home/runner/work/rusty_quest/rusty_quest/rusty_hero_quest
         
       - name: Run cargo test
         run: cargo test
