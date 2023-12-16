@@ -15,13 +15,8 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
-      - name: List directory contents of rusty_quest/rusty_quest
-        run: ls -la /home/runner/work/rusty_quest/rusty_quest
-      - name: cd to correct directory
-        run: cd /home/runner/work/rusty_quest/rusty_quest/rusty_hero_quest
-        
       - name: Run cargo test
-        run: cargo test
+        run: cd /home/runner/work/rusty_quest/rusty_quest/rusty_hero_quest; cargo test
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
