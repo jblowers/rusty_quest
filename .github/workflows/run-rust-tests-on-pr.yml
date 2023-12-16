@@ -15,10 +15,8 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
-      - name: List directory contents of work/
-        run: ls -la /home/runner/work/
-      - name: List directory contents of rusty_quest/
-        run: ls -la /home/runner/work/rusty_quest/
+      - name: List directory contents of rusty_quest/rusty_quest
+        run: ls -la /home/runner/work/rusty_quest/rusty_quest
       - name: cd to correct directory
         run: cd /home/runner/work/rusty_quest/rusty_hero_quest
         
