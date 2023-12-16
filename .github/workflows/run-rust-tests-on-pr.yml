@@ -17,7 +17,7 @@ jobs:
           toolchain: stable
 
       - name: Run cargo test
-        run: cargo test --all
+        run: cargo test --all --cwd runner/work/rusty_quest
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
