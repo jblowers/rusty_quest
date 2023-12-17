@@ -1,8 +1,9 @@
 use super::card_collection;
-// use card_collection::CardCollection;
+use serde::{Serialize, Deserialize};
 
 
 // Player data
+#[derive(Debug,Serialize,Deserialize)]
 pub struct Player {
     pub id: u32,
     pub name: String,

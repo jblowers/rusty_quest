@@ -1,15 +1,17 @@
 pub mod card_collection;
 use card_collection::Card;
-use card_collection::CardType;
 use card_collection::CardCollection;
 use std::collections::HashMap;
 pub mod player_state;
 use player_state::Player;
+use serde::{Serialize, Deserialize};
+
 
 
 // Equipment data
 // #[derive(Debug)]
 // TODO: This needs to be designed right (?)
+#[derive(Debug,Serialize,Deserialize)]
 struct Equipment {
     id: u32,
     position: u32,
@@ -19,6 +21,7 @@ struct Equipment {
 }
 
 // TODO: This needs to be designed right (?)
+#[derive(Debug,Serialize,Deserialize)]
 enum EquipmentType {
     MeleeWeapon,
     RangedWeapon,
@@ -28,6 +31,7 @@ enum EquipmentType {
 // Ability data
 // #[derive(Debug)]
 // TODO: This needs to be designed right
+#[derive(Debug,Serialize,Deserialize)]
 struct Ability {
     id: u32,
     position: u32,
@@ -37,12 +41,14 @@ struct Ability {
 }
 
 // TODO: This needs to be designed right
+#[derive(Debug,Serialize,Deserialize)]
 enum AbilityType {
     CombatBonus,
     DefenseBonus,
     SpecialAbility,
 }
 
+#[derive(Debug,Serialize,Deserialize)]
 struct Enemy {
     name: String,
     attack_strength: i32,
@@ -50,23 +56,21 @@ struct Enemy {
     equipment: Equipment,
 }
 
-// Board data
-// #[derive(Debug)]
+#[derive(Debug,Serialize,Deserialize)]
 struct Board {
     spaces: Vec<Space>,
 }
 
-// #[derive(Debug)]
-#[derive(Clone)]
+#[derive(Clone,Debug,Serialize,Deserialize)]
 enum Space {
     Home,
-    // Occupied(Player),
-    Equipment(Equipment),
-    Ability(Ability),
-    Combat(Enemy),
+    // Equipment(Equipment),
+    // Ability(Ability),
+    // Combat(Enemy),
 }
 
 // Game state
+#[derive(Debug,Serialize,Deserialize)]
 pub struct GameState {
     players: HashMap<u32, Player>,
     board: Board,
@@ -85,7 +89,7 @@ impl GameState {
         GameState {
             players: HashMap::new(),
             board: Board {
-                spaces: vec![Space::Empty; 100],
+                spaces: vec![Space::Home],
             },
             deck,
             discard: CardCollection::new(),

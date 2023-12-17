@@ -50,7 +50,6 @@ fn test_add_card() {
 
 #[test]
 fn test_shuffle_randomness() {
-    let mut coll = create_test_collection();
     for _ in 0..1000 {
         let mut deck = create_test_collection();
         deck.shuffle();
