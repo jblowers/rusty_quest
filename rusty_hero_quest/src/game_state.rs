@@ -43,6 +43,13 @@ enum AbilityType {
     SpecialAbility,
 }
 
+struct Enemy {
+    name: String,
+    attack_strength: i32,
+    defense_strength: i32,
+    equipment: Equipment,
+}
+
 // Board data
 // #[derive(Debug)]
 struct Board {
@@ -52,10 +59,11 @@ struct Board {
 // #[derive(Debug)]
 #[derive(Clone)]
 enum Space {
-    Empty,
+    Home,
     // Occupied(Player),
-    // Equipment(Equipment),
-    // Ability(Ability),
+    Equipment(Equipment),
+    Ability(Ability),
+    Combat(Enemy),
 }
 
 // Game state
