@@ -24,7 +24,7 @@ async fn main() {
     println!("{}", serialized_state);
     
     let mut deserial : GameState = serde_json::from_str(&serialized_state).unwrap();
-    deserial.print_deck();
+    // deserial.print_deck();
     // gs.print_deck();
 
     
@@ -56,7 +56,6 @@ async fn main() {
         })
         .with(cors);
 
-    warp::serve(game_state_route.or(shuffle_deck_route)).run(([127, 0, 0, 1], 3030)).await;
-
+    warp::serve(game_state_route.or(shuffle_deck_route)).run(([0, 0, 0, 0], 3030)).await;
 
 }
