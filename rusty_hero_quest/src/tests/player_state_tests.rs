@@ -9,7 +9,7 @@ fn test_add_to_hand() {
     let mut coll = card_collection::CardCollection::new();
     coll.populate_self_with_fresh_cards(52);
     let mut drawn_cards = card_collection::CardCollection::new();
-    for i in 0..CARDS_DRAWN {
+    for _i in 0..CARDS_DRAWN {
         let cardd = coll.draw_card();
         if cardd.is_some() {
             drawn_cards.add_card(cardd.unwrap());

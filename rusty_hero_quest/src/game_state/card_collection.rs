@@ -1,10 +1,11 @@
 use std::collections::VecDeque;
 use rand::seq::SliceRandom; // Import the trait for shuffle
 use rand::thread_rng;       // Import thread_rng for a random number generator
-
+use serde::{Serialize, Deserialize};
 
 pub const MAX_CARD_VALUE: u32 = 13;
 
+#[derive(Debug,Serialize,Deserialize)]
 pub struct CardCollection {
     pub cards: VecDeque<Card>,
 }
@@ -64,12 +65,12 @@ impl CardCollection {
         println!("contents:\n\tValue:\tType:");
         for card in &self.cards {
             // let typ = card.typ;
-            let typeStr = if let CardType::Good = card.typ {
+            let type_str = if let CardType::Good = card.typ {
                 "Good"
             } else {
                 "Bad"
             };
-            println!("\t {}\t{}",card.value,typeStr);
+            println!("\t {}\t{}",card.value,type_str);
         }
     }
     // Add other helper functions as needed
@@ -80,7 +81,7 @@ impl CardCollection {
 
 
 // Card data
-#[derive(Debug)]
+#[derive(Debug,Serialize,Deserialize)]
 pub struct Card {
     // id: u32,
     pub typ: CardType,
@@ -100,7 +101,7 @@ impl PartialEq for Card {
     }
 }
 
-#[derive(Debug,Copy)]
+#[derive(Copy,Debug,Serialize,Deserialize)]
 pub enum CardType {
     Good,
     Bad,
