@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+  rusty_quest:
+    build: .
+    ports:
+      - "3030:3030"
+    volumes:
+      - .:/usr/src/rusty_quest
+    environment:
+      - RUST_BACKTRACE=1
+#    command: ["cargo", "run"]
+    command: ["rusty_hero_quest"]
