@@ -79,6 +79,11 @@ impl CardCollection {
     // - Sort the cards based on a specific criteria
 }
 
+impl PartialEq for CardCollection {
+    fn eq(&self, other: &Self) -> bool {
+        self.cards == other.cards
+    }
+}
 
 // Card data
 #[derive(Debug,Serialize,Deserialize)]

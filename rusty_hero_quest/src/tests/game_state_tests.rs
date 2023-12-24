@@ -1,5 +1,6 @@
 // use criterion::black_box;
-// use super::super::game_state::card_collection;
+// mod super::super::game_state;
+use super::super::game_state;
 
 
 #[test]
@@ -8,6 +9,21 @@ fn test_populate_with_fresh_cards() {
     // coll.populate_self_with_fresh_cards(CARD_COUNT as u32);
     // assert_eq!(coll.cards.len(), CARD_COUNT,"Deck size should be 52 to start");
 }
+
+
+#[test]
+fn serialize_deserialize_game_state() {
+    
+    let mut gs = game_state::GameState::new();
+    gs.shuffle_deck();
+    // gs.print_deck();
+
+    let mut serialized_state = serde_json::to_string(&gs).unwrap();
+    let mut deserial : game_state::GameState = serde_json::from_str(&serialized_state).unwrap();
+    assert_eq!(&gs,&deserial,"Game states should be the same before and after serialize/deserialize");
+}
+
+
 
 // #[test]
 // fn test_draw_card() {

@@ -11,7 +11,7 @@ use serde::{Serialize, Deserialize};
 // Equipment data
 // #[derive(Debug)]
 // TODO: This needs to be designed right (?)
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize, PartialEq)]
 struct Equipment {
     id: u32,
     position: u32,
@@ -21,7 +21,7 @@ struct Equipment {
 }
 
 // TODO: This needs to be designed right (?)
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize, PartialEq)]
 enum EquipmentType {
     MeleeWeapon,
     RangedWeapon,
@@ -31,7 +31,7 @@ enum EquipmentType {
 // Ability data
 // #[derive(Debug)]
 // TODO: This needs to be designed right
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize, PartialEq)]
 struct Ability {
     id: u32,
     position: u32,
@@ -41,14 +41,14 @@ struct Ability {
 }
 
 // TODO: This needs to be designed right
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize, PartialEq)]
 enum AbilityType {
     CombatBonus,
     DefenseBonus,
     SpecialAbility,
 }
 
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize, PartialEq)]
 struct Enemy {
     name: String,
     attack_strength: i32,
@@ -56,12 +56,12 @@ struct Enemy {
     equipment: Equipment,
 }
 
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize, PartialEq)]
 struct Board {
     spaces: Vec<Space>,
 }
 
-#[derive(Clone,Debug,Serialize,Deserialize)]
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
 enum Space {
     Home,
     // Equipment(Equipment),
@@ -117,5 +117,15 @@ impl GameState {
         return self.deck.draw_card();
     }
 
+}
+impl PartialEq for GameState {
+    fn eq(&self, other: &Self) -> bool {
+        self.players == other.players
+            && self.board == other.board
+            && self.deck == other.deck
+            && self.discard == other.discard
+            && self.active_player_id == other.active_player_id
+            && self.turn == other.turn
+    }
 }
 
