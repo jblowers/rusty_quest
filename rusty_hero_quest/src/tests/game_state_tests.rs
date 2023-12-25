@@ -38,7 +38,7 @@ fn flip_top_card_to_discard() {
 #[test]
 fn add_card_to_discard_pile() {
     let mut gs = game_state::GameState::new();
-    assert_eq!(gs.discard.size(),0 as usize,"discard should be zero to start");
+    assert_eq!(gs.get_discard().size(),0 as usize,"discard should be zero to start");
     let mut card = card_collection::Card {
         typ: card_collection::CardType::Good,
         value: 1,
@@ -46,24 +46,22 @@ fn add_card_to_discard_pile() {
     };
     
     gs.discard_card(card);
-    assert_eq!(gs.discard.size(), 1, "Discard should be 1 after discarding 1 card");
-
-
+    assert_eq!(gs.get_discard().size(), 1, "Discard should be 1 after discarding 1 card");
 }
 
-// #[test]
-// fn test_draw_card() {
+#[test]
+fn shuffle_discard_into_deck() {
+    let mut gs = game_state::GameState::new();
+    for i in 0..gs.get_deck().size() {
+        let card = gs.draw_card(0);
+        gs.discard_card(card.unwrap());
+    }
+    assert_eq!(gs.get_deck().size(),0,"deck size should be zero");
+    assert_eq!(gs.get_discard().size(),52,"discard size should be 52");
+    gs.replenish_deck_from_discard();
+    assert_eq!(gs.get_deck().size(),52, "Deck size should be 52 again");
+    assert_eq!(gs.get_discard().size(),0,"discard size should be 0 again");
+}
 
-//     // let CARD_COUNT: usize = 52;
-//     let mut coll = card_collection::CardCollection::new();//.populate_self_with_fresh_cards();
-//     coll.populate_self_with_fresh_cards(CARD_COUNT as u32);
-//     assert_eq!(coll.cards.len(), CARD_COUNT, "Deck size should be 52 to start");
-
-//     // Draw a card and check if it exists
-//     let drawn_card = black_box(coll.draw_card());
-//     assert!(drawn_card.is_some(), "Expected to draw a card, but got None");
-
-//     assert_eq!(coll.cards.len(), CARD_COUNT-1, "Deck size should decrease after drawing a card");
-// }
 
 

@@ -75,8 +75,8 @@ enum Space {
 pub struct GameState {
     players: HashMap<u32, Player>,
     board: Board,
-    pub deck: CardCollection,
-    pub discard: CardCollection,
+    deck: CardCollection,
+    discard: CardCollection,
     // cards can also exist in player's hand... Need to track here or no?
     active_player_id: u32,
     turn: u32,
@@ -99,8 +99,27 @@ impl GameState {
         }
     }
 
+    pub fn get_deck(&mut self) -> &CardCollection {
+        &self.deck
+    }
+    pub fn get_discard(&mut self) -> &CardCollection {
+        &self.discard
+    }
+
     pub fn shuffle_deck(&mut self) {
         self.deck.shuffle();
+    }
+
+    pub fn replenish_deck_from_discard(&mut self) {
+        let discarded_cards = self.discard.draw_all();
+        self.deck.add_cards(discarded_cards);
+        self.shuffle_deck();
+
+        // for i in 0..self.get_discard().size() {
+        //     let card = self.get_discard().draw_card();
+        //     self.get_deck().add_card(card);
+        // }
+        // self.shuffle_deck();
     }
 
     pub fn print_deck(&mut self) {
@@ -114,7 +133,7 @@ impl GameState {
         self.players.insert(id,player);
     }
 
-    fn draw_card(&mut self, _player_id: u32) -> Option<Card> { // option allows for checking if empty
+    pub fn draw_card(&mut self, _player_id: u32) -> Option<Card> { // option allows for checking if empty
         return self.deck.draw_card();
     }
 

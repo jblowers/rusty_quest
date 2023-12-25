@@ -27,8 +27,16 @@ impl CardCollection {
         self.cards.push_back(card);
     }
 
+    pub fn add_cards(&mut self, cards: Vec<Card>) {
+        self.cards.extend(cards);
+    }
+
     pub fn draw_card(&mut self) -> Option<Card> {
         self.cards.pop_front()
+    }
+    
+    pub fn draw_all(&mut self) -> Vec<Card> {
+        self.cards.drain(..).collect()
     }
 
     pub fn peek_top_card(&mut self) -> Option<&Card> {
