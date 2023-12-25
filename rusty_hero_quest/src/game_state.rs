@@ -1,6 +1,7 @@
 pub mod card_collection;
 use card_collection::Card;
 use card_collection::CardCollection;
+use card_collection::CardState;
 use std::collections::HashMap;
 pub mod player_state;
 use player_state::Player;
@@ -74,8 +75,8 @@ enum Space {
 pub struct GameState {
     players: HashMap<u32, Player>,
     board: Board,
-    deck: CardCollection,
-    discard: CardCollection,
+    pub deck: CardCollection,
+    pub discard: CardCollection,
     // cards can also exist in player's hand... Need to track here or no?
     active_player_id: u32,
     turn: u32,
@@ -85,7 +86,7 @@ impl GameState {
     pub fn new() -> Self {
         
         let mut deck = CardCollection::new();
-        deck.populate_self_with_fresh_cards(52);
+        deck.populate_self_with_fresh_cards(52, CardState::Deck);
         GameState {
             players: HashMap::new(),
             board: Board {
@@ -116,6 +117,21 @@ impl GameState {
     fn draw_card(&mut self, _player_id: u32) -> Option<Card> { // option allows for checking if empty
         return self.deck.draw_card();
     }
+
+    pub fn discard_card(&mut self, mut card: Card) {
+        card.state = CardState::Discard;
+        self.discard.add_card(card);
+    }
+
+    // pub fn flip_top_card(&mut self) -> Option<Card> {
+    //     let mut card = self.draw_card();
+    //     if card.is_empty() {
+    //         // handle this error
+    //     }
+    //     card.unwrap().state = CardCollection::CardState::InUse;
+
+
+    // }
 
 }
 impl PartialEq for GameState {

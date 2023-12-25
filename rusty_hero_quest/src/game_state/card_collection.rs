@@ -31,6 +31,10 @@ impl CardCollection {
         self.cards.pop_front()
     }
 
+    pub fn peek_top_card(&mut self) -> Option<&Card> {
+        self.cards.front()
+    }
+
     pub fn get_cards_iterable(&mut self) -> Vec<Card> {
         // let coll_as_vec: Vec<Card> = self.cards.to_owned();
         let coll_as_vec: Vec<Card> = self.cards.iter().cloned().collect::<Vec<Card>>();
@@ -45,14 +49,14 @@ impl CardCollection {
         cards_vec.shuffle(&mut rng);
         self.cards = cards_vec.into();
     }
-    pub fn populate_self_with_fresh_cards(&mut self, card_count: u32) {        
+    pub fn populate_self_with_fresh_cards(&mut self, card_count: u32, card_state: CardState) {        
         let mut deck = Vec::new();
         let count_each_type = card_count / MAX_CARD_VALUE / 2; // 52 by 13 by 2 is 2 cards for each value/type
         for _iteration in 0..count_each_type {
             // should hit this twice
             for i in 1..MAX_CARD_VALUE + 1 {
-                let good_card = Card {typ: CardType::Good, value: i};
-                let bad_card = Card {typ: CardType::Bad, value: i};
+                let good_card = Card {typ: CardType::Good, value: i, state: card_state.clone()};
+                let bad_card = Card {typ: CardType::Bad, value: i, state: card_state.clone()};
                 deck.push(good_card);
                 deck.push(bad_card);               
             }
@@ -64,7 +68,6 @@ impl CardCollection {
     pub fn print_collection_contents(&mut self) {
         println!("contents:\n\tValue:\tType:");
         for card in &self.cards {
-            // let typ = card.typ;
             let type_str = if let CardType::Good = card.typ {
                 "Good"
             } else {
@@ -85,28 +88,27 @@ impl PartialEq for CardCollection {
     }
 }
 
+
+#[derive(Clone,Debug,Serialize,Deserialize,PartialEq)]
+pub enum CardState {
+    Deck,
+    Discard,
+    PlayerHand,
+    InUse,
+}
+
+
 // Card data
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct Card {
     // id: u32,
     pub typ: CardType,
     pub value: u32,
-}
-impl Clone for Card {
-    fn clone(&self) -> Self {
-        Card {
-            typ: self.typ.clone(),
-            value: self.value,
-        }
-    }
-}
-impl PartialEq for Card {
-    fn eq(&self, other: &Self) -> bool {
-        self.typ == other.typ && self.value == other.value
-    }
+    pub state: CardState,
 }
 
-#[derive(Copy,Debug,Serialize,Deserialize)]
+
+#[derive(Clone,Debug,Serialize,Deserialize)]
 pub enum CardType {
     Good,
     Bad,
@@ -117,15 +119,6 @@ impl PartialEq for CardType {
             (CardType::Good, CardType::Good) => true,
             (CardType::Bad, CardType::Bad) => true,
             _ => false,
-        }
-    }
-}
-
-impl Clone for CardType {
-    fn clone(&self) -> Self {
-        match *self {
-            CardType::Good => CardType::Good,
-            CardType::Bad => CardType::Bad,
         }
     }
 }

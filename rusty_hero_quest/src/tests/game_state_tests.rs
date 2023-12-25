@@ -1,6 +1,10 @@
 // use criterion::black_box;
 // mod super::super::game_state;
-use super::super::game_state;
+// use super::super::game_state;
+// use super::super::game_state::card_collection::*;
+// use crate::tests::game_state_tests::CardState;
+use crate::game_state;
+use crate::game_state::card_collection;
 
 
 #[test]
@@ -23,7 +27,29 @@ fn serialize_deserialize_game_state() {
     assert_eq!(&gs,&deserial,"Game states should be the same before and after serialize/deserialize");
 }
 
+#[test]
+fn flip_top_card_to_discard() {
+    let mut gs = game_state::GameState::new();
+    // deck should still be in order
+    // let card = gs.flip_top_card();
 
+}
+
+#[test]
+fn add_card_to_discard_pile() {
+    let mut gs = game_state::GameState::new();
+    assert_eq!(gs.discard.size(),0 as usize,"discard should be zero to start");
+    let mut card = card_collection::Card {
+        typ: card_collection::CardType::Good,
+        value: 1,
+        state: card_collection::CardState::InUse,
+    };
+    
+    gs.discard_card(card);
+    assert_eq!(gs.discard.size(), 1, "Discard should be 1 after discarding 1 card");
+
+
+}
 
 // #[test]
 // fn test_draw_card() {
