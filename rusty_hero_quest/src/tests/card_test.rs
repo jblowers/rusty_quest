@@ -82,3 +82,11 @@ fn test_peek_top_card() {
     let comp_card = coll.cards.pop_front().unwrap();//.unwrap();
     assert_eq!(peeked_card,comp_card, "peeked card should match the actual top card of discard in gs.");
 }
+
+#[test]
+fn test_draw_all() {
+    let mut coll = create_test_collection();
+    let drawn_cards = coll.draw_all();
+    assert_eq!(drawn_cards.len(),CARD_COUNT,"size of drawn cards should be same as a full deck");
+    assert_eq!(coll.size(),0,"deck size should now be zero");
+}
