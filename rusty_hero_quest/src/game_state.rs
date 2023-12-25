@@ -114,12 +114,6 @@ impl GameState {
         let discarded_cards = self.discard.draw_all();
         self.deck.add_cards(discarded_cards);
         self.shuffle_deck();
-
-        // for i in 0..self.get_discard().size() {
-        //     let card = self.get_discard().draw_card();
-        //     self.get_deck().add_card(card);
-        // }
-        // self.shuffle_deck();
     }
 
     pub fn print_deck(&mut self) {
