@@ -1,16 +1,27 @@
 // use criterion::black_box;
+// mod game_state;
+
 use super::super::game_state::card_collection;
+
+use super::super::game_state;
+
+
+const CARD_COUNT: u32 = 52;
+const FIRST_CARD: CardCollection::Card = CardCollection::Card {
+    typ: game_state::card_collection::CardType::Good,
+    value: 1,
+};
 
 
 #[test]
-fn test_populate_with_fresh_cards() {    
-    // let mut coll = card_collection::CardCollection::new();
-    // coll.populate_self_with_fresh_cards(CARD_COUNT as u32);
-    // assert_eq!(coll.cards.len(), CARD_COUNT,"Deck size should be 52 to start");
+fn test_draw_card() {
+    let mut gs = game_state::GameState::new();
+    assert_eq!(gs.cards_remaining_in_deck(),CARD_COUNT,"Should have all cards remaining in deck");
+
+    // let card = gs.draw_card();
+    // assert_eq!()
 }
 
-// #[test]
-// fn test_draw_card() {
 
 //     // let CARD_COUNT: usize = 52;
 //     let mut coll = card_collection::CardCollection::new();//.populate_self_with_fresh_cards();

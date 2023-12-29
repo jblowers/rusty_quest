@@ -86,6 +86,10 @@ impl GameState {
         }
     }
 
+    pub fn cards_remaining_in_deck(&mut self)-> u32 {
+        self.deck.size() as u32
+    }
+
     pub fn shuffle_deck(&mut self) {
         self.deck.shuffle();
     }
