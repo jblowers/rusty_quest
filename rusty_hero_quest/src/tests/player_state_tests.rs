@@ -7,7 +7,7 @@ const CARDS_DRAWN: u32 = 5;
 #[test]
 fn test_add_to_hand() {    
     let mut coll = card_collection::CardCollection::new();
-    coll.populate_self_with_fresh_cards(52);
+    coll.populate_self_with_fresh_cards(52, card_collection::CardState::InUse);
     let mut drawn_cards = card_collection::CardCollection::new();
     for _i in 0..CARDS_DRAWN {
         let cardd = coll.draw_card();
