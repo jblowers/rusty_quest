@@ -7,11 +7,19 @@ use crate::game_state;
 use crate::game_state::card_collection;
 
 
+
+const CARD_COUNT: u32 = 52;
+const FIRST_CARD: card_collection::Card = card_collection::Card {
+    typ: card_collection::CardType::Good,
+    value: 1,
+    state: card_collection::CardState::InUse,
+};
+
+
 #[test]
-fn test_populate_with_fresh_cards() {    
-    // let mut coll = card_collection::CardCollection::new();
-    // coll.populate_self_with_fresh_cards(CARD_COUNT as u32);
-    // assert_eq!(coll.cards.len(), CARD_COUNT,"Deck size should be 52 to start");
+fn test_draw_card() {
+    let mut gs = game_state::GameState::new();
+    assert_eq!(gs.cards_remaining_in_deck(),CARD_COUNT,"Should have all cards remaining in deck");
 }
 
 

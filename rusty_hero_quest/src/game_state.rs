@@ -102,8 +102,13 @@ impl GameState {
     pub fn get_deck(&mut self) -> &CardCollection {
         &self.deck
     }
+
     pub fn get_discard(&mut self) -> &CardCollection {
         &self.discard
+    }
+
+    pub fn cards_remaining_in_deck(&mut self)-> u32 {
+        self.deck.size() as u32
     }
 
     pub fn shuffle_deck(&mut self) {
@@ -144,7 +149,6 @@ impl GameState {
     //     card.unwrap().state = CardCollection::CardState::InUse;
 
 
-    // }
 
 }
 impl PartialEq for GameState {
