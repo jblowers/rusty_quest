@@ -8,68 +8,6 @@ use player_state::Player;
 use serde::{Serialize, Deserialize};
 
 
-
-// Equipment data
-// #[derive(Debug)]
-// TODO: This needs to be designed right (?)
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
-struct Equipment {
-    id: u32,
-    position: u32,
-    typ: EquipmentType,
-    combat_score: i32,
-    defense_score: i32,
-}
-
-// TODO: This needs to be designed right (?)
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
-enum EquipmentType {
-    MeleeWeapon,
-    RangedWeapon,
-    Armor,
-}
-
-// Ability data
-// #[derive(Debug)]
-// TODO: This needs to be designed right
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
-struct Ability {
-    id: u32,
-    position: u32,
-    typ: AbilityType,
-    value: i32,
-    duration: u32,
-}
-
-// TODO: This needs to be designed right
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
-enum AbilityType {
-    CombatBonus,
-    DefenseBonus,
-    SpecialAbility,
-}
-
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
-struct Enemy {
-    name: String,
-    attack_strength: i32,
-    defense_strength: i32,
-    equipment: Equipment,
-}
-
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
-struct Board {
-    spaces: Vec<Space>,
-}
-
-#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
-enum Space {
-    Home,
-    // Equipment(Equipment),
-    // Ability(Ability),
-    // Combat(Enemy),
-}
-
 // Game state
 #[derive(Debug,Serialize,Deserialize)]
 pub struct GameState {
@@ -148,8 +86,6 @@ impl GameState {
     //     }
     //     card.unwrap().state = CardCollection::CardState::InUse;
 
-
-
 }
 impl PartialEq for GameState {
     fn eq(&self, other: &Self) -> bool {
@@ -162,3 +98,68 @@ impl PartialEq for GameState {
     }
 }
 
+
+
+
+// ************************************ //
+// *************** Aux defines ******** //
+
+
+
+#[derive(Debug,Serialize,Deserialize, PartialEq)]
+struct Board {
+    spaces: Vec<Space>,
+}
+
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
+enum Space {
+    Home,
+    Equipment(Equipment),
+    Ability(Ability),
+    Combat(Enemy),
+}
+
+// TODO: This needs to be designed right (?)
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
+struct Equipment {
+    id: u32,
+    position: u32,
+    typ: EquipmentType,
+    combat_score: i32,
+    defense_score: i32,
+}
+
+// TODO: This needs to be designed right (?)
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
+enum EquipmentType {
+    MeleeWeapon,
+    RangedWeapon,
+    Armor,
+}
+
+// TODO: This needs to be designed right
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
+struct Ability {
+    id: u32,
+    position: u32,
+    typ: AbilityType,
+    value: i32,
+    duration: u32,
+}
+
+// TODO: This needs to be designed right
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
+enum AbilityType {
+    CombatBonus,
+    DefenseBonus,
+    SpecialAbility,
+}
+
+// TODO: This needs to be designed right
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
+struct Enemy {
+    name: String,
+    attack_strength: i32,
+    defense_strength: i32,
+    equipment: Equipment,
+}

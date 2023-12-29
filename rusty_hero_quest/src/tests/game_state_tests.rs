@@ -1,8 +1,3 @@
-// use criterion::black_box;
-// mod super::super::game_state;
-// use super::super::game_state;
-// use super::super::game_state::card_collection::*;
-// use crate::tests::game_state_tests::CardState;
 use crate::game_state;
 use crate::game_state::card_collection;
 
