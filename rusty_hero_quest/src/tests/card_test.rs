@@ -8,16 +8,14 @@ const CARD_COUNT: usize = 52;
 #[test]
 fn test_populate_with_fresh_cards() {    
     let mut coll = card_collection::CardCollection::new();
-    coll.populate_self_with_fresh_cards(CARD_COUNT as u32);
+    coll.populate_self_with_fresh_cards(CARD_COUNT as u32, card_collection::CardState::InUse);
     assert_eq!(coll.cards.len(), CARD_COUNT,"Deck size should be 52 to start");
 }
 
 #[test]
 fn test_draw_card() {
-
-    // let CARD_COUNT: usize = 52;
-    let mut coll = card_collection::CardCollection::new();//.populate_self_with_fresh_cards();
-    coll.populate_self_with_fresh_cards(CARD_COUNT as u32);
+    let mut coll = card_collection::CardCollection::new();
+    coll.populate_self_with_fresh_cards(CARD_COUNT as u32, card_collection::CardState::Deck);
     assert_eq!(coll.cards.len(), CARD_COUNT, "Deck size should be 52 to start");
 
     // Draw a card and check if it exists
@@ -42,7 +40,7 @@ fn test_add_card() {
     let mut coll = card_collection::CardCollection::new();
     let good = card_collection::CardType::Good;
     let val = 10;
-    coll.add_card(card_collection::Card {typ:good, value: val});
+    coll.add_card(card_collection::Card {typ:good, value: val, state: card_collection::CardState::InUse});
     assert_eq!(coll.cards.len(), 1, "Expect only 1 card in the deck");
     // assert_eq!(coll.cards[0].typ,good);
     assert_eq!(coll.cards[0].value,val);
@@ -59,7 +57,7 @@ fn test_shuffle_randomness() {
 
 fn create_test_collection() -> card_collection::CardCollection {
     let mut coll = card_collection::CardCollection::new();
-    coll.populate_self_with_fresh_cards(CARD_COUNT as u32);
+    coll.populate_self_with_fresh_cards(CARD_COUNT as u32, card_collection::CardState::InUse);
     return coll;
 }
 
@@ -70,4 +68,25 @@ fn test_shuffle_card_presence() {
     for card in create_test_collection().cards {
         assert!(deck.cards.contains(&card)); // All cards should be present
     }
+}
+
+
+#[test]
+fn test_peek_top_card() {
+    let mut coll = create_test_collection();
+    let peeked_card = {
+        let opt = coll.peek_top_card();
+        assert!(opt.is_some(), "Top card should always be there because we created a test collection");
+        opt.unwrap().clone()
+    };
+    let comp_card = coll.cards.pop_front().unwrap();//.unwrap();
+    assert_eq!(peeked_card,comp_card, "peeked card should match the actual top card of discard in gs.");
+}
+
+#[test]
+fn test_draw_all() {
+    let mut coll = create_test_collection();
+    let drawn_cards = coll.draw_all();
+    assert_eq!(drawn_cards.len(),CARD_COUNT,"size of drawn cards should be same as a full deck");
+    assert_eq!(coll.size(),0,"deck size should now be zero");
 }
