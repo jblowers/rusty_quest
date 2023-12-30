@@ -63,8 +63,10 @@ impl CardCollection {
         for _iteration in 0..count_each_type {
             // should hit this twice
             for i in 1..MAX_CARD_VALUE + 1 {
-                let good_card = Card {typ: CardType::Good, value: i, state: card_state.clone()};
-                let bad_card = Card {typ: CardType::Bad, value: i, state: card_state.clone()};
+                let id_val = i as i32;
+                let good_card = Card {id: id_val, typ: CardType::Good, value: i, state: card_state.clone()};
+                let id_val = -1*i as i32;
+                let bad_card = Card { id: id_val,typ: CardType::Bad, value: i, state: card_state.clone()};
                 deck.push(good_card);
                 deck.push(bad_card);               
             }
@@ -97,23 +99,24 @@ impl PartialEq for CardCollection {
 }
 
 
-#[derive(Clone,Debug,Serialize,Deserialize,PartialEq)]
-pub enum CardState {
-    Deck,
-    Discard,
-    PlayerHand,
-    InUse,
-}
-
-
 // Card data
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Card {
-    // id: u32,
+    pub id: i32,
     pub typ: CardType,
     pub value: u32,
     pub state: CardState,
 }
+
+#[derive(Clone,Debug,Serialize,Deserialize,PartialEq)]
+pub enum CardState {
+    Deck,
+    Discard,
+    PlayerHand, //(playerId)
+    InUse,
+}
+
+
 
 
 #[derive(Clone,Debug,Serialize,Deserialize)]

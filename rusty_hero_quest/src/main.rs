@@ -16,14 +16,14 @@ mod tests;
 
 #[tokio::main]
 async fn main() {
-    let mut gs = GameState::new();
-    gs.shuffle_deck();
-    gs.print_deck();
+    // let mut gs = GameState::new();
+    // gs.shuffle_deck();
+    // gs.print_deck();
 
-    let mut serialized_state = serde_json::to_string(&gs).unwrap();
-    println!("{}", serialized_state);
+    // let mut serialized_state = serde_json::to_string(&gs).unwrap();
+    // println!("{}", serialized_state);
     
-    let mut deserial : GameState = serde_json::from_str(&serialized_state).unwrap();
+    // let mut deserial : GameState = serde_json::from_str(&serialized_state).unwrap();
     // deserial.print_deck();
     // gs.print_deck();
 
