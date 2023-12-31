@@ -51,9 +51,54 @@ function App() {
       .catch(error => console.error('Error:', error));
   };
 
+
+
+
+  const handleNewGame = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${ipAddress}/game_state/new_game`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      setGameState(data);
+      setGameId(data.id);
+    } catch (error) {
+      console.error('Error fetching new game:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // added 12/30
+  
+  // const [gameState, setGameState] = useState({});
+  const [gameId, setGameId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const refreshGameState = async () => {
+    if (!gameId) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${ipAddress}/game_state/${gameId}`);
+      const data = await response.json();
+      setGameState(data);
+    } catch (error) {
+      console.error('Error fetching game state:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSelectChange = (event) => {
     setTempIp(event.target.value);
   };
+
+  
   
   function IpAddressConfiguration() {
     return (
@@ -91,6 +136,8 @@ function App() {
             <PlayerList players={gameState.players} />
             <hr />
             <CardList cards={gameState.deck.cards} shuffleClickHandler={handleShuffleClick} />
+            <hr />
+            <CreateGame gamestate={gameState} gameId={gameId} handleNewGame={handleNewGame} />
           </div>
         ) : (
           <p>Loading game state...</p>
@@ -102,6 +149,27 @@ function App() {
 
 export default App;
 
+
+function CreateGame({gamestate,gameId,handleNewGame}) {
+  return (
+    <div className="App">
+      <button onClick={handleNewGame} disabled={isLoading}>
+        {isLoading ? 'Loading...' : 'Start New Game'}
+      </button>
+      <button onClick={refreshGameState} disabled={isLoading || !gameId}>
+        Refresh Game State
+      </button>
+      <div>
+        <h2>Game State:</h2>
+        <textarea
+          value={JSON.stringify(gameState, null, 2)}
+          readOnly
+          style={{ width: '100%', height: '300px' }}
+        />
+      </div>
+    </div>
+  );
+}
 
 
 function CardList({ cards, shuffleClickHandler }) {
