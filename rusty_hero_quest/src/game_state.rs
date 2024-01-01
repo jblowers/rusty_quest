@@ -9,8 +9,9 @@ use serde::{Serialize, Deserialize};
 
 
 // Game state
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Clone,Debug,Serialize,Deserialize)]
 pub struct GameState {
+    id: u32,
     players: HashMap<u32, Player>,
     board: Board,
     deck: CardCollection,
@@ -26,6 +27,22 @@ impl GameState {
         let mut deck = CardCollection::new();
         deck.populate_self_with_fresh_cards(52, CardState::Deck);
         GameState {
+            id: 0,
+            players: HashMap::new(),
+            board: Board {
+                spaces: vec![Space::Home],
+            },
+            deck,
+            discard: CardCollection::new(),
+            active_player_id: 0,
+            turn: 0,
+        }
+    }
+    pub fn new_game(game_id: u32) -> Self {                
+        let mut deck = CardCollection::new();
+        deck.populate_self_with_fresh_cards(52, CardState::Deck);
+        GameState {
+            id: game_id,
             players: HashMap::new(),
             board: Board {
                 spaces: vec![Space::Home],
@@ -95,6 +112,7 @@ impl PartialEq for GameState {
             && self.discard == other.discard
             && self.active_player_id == other.active_player_id
             && self.turn == other.turn
+            && self.id == other.id
     }
 }
 
@@ -106,7 +124,7 @@ impl PartialEq for GameState {
 
 
 
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
 struct Board {
     spaces: Vec<Space>,
 }
