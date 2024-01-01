@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useCallback  } from 'react';
+import DebuggingTool from './DebuggingTool'; // Adjust the import path if necessary
+
 import './App.css';
 
 const DEFAULT_URL = 'http://192.168.0.134:3030';
@@ -115,10 +117,11 @@ function App() {
         {
           <IpAddressConfiguration />
         }
-        { 
-          <CreateGame gameState={gameState} gameId={gameId} isLoading={isLoading} handleNewGame={handleNewGame} refreshGameState={refreshGameState} handleShuffleClick={handleShuffleClick}/>
-          
-        }
+        { <div>
+            <CreateGame gameState={gameState} gameId={gameId} isLoading={isLoading} handleNewGame={handleNewGame} refreshGameState={refreshGameState} handleShuffleClick={handleShuffleClick}/>
+            <DebuggingTool ipAddress={ipAddress} />
+          </div>
+          }
       </header>
     </div>
   );
@@ -147,7 +150,7 @@ function CreateGame({gameState,gameId,isLoading,handleNewGame,refreshGameState, 
         />
       </div>
       <div>
-        <CardList cards={gameState.deck} shuffleClickHandler={handleShuffleClick} />
+        <CardList cards={gameState.deck.cards} shuffleClickHandler={handleShuffleClick} />
       </div>
     </div>
     :
@@ -171,7 +174,7 @@ function CardList({ cards, shuffleClickHandler }) {
     <div>
       <h2>Cards</h2>
       <div style={cardListStyle}>
-        {cards.map((card, index) => (
+        {Array.isArray(cards) && cards.map((card, index) => (
           <div key={index}>
             {card.value}, {card.typ}
           </div>
