@@ -147,7 +147,7 @@ function CreateGame({gameState,gameId,isLoading,handleNewGame,refreshGameState, 
         />
       </div>
       <div>
-        <CardList cards={gameState.deck} shuffleClickHandler={handleShuffleClick} />
+        <CardList cards={gameState.deck.cards} shuffleClickHandler={handleShuffleClick} />
       </div>
     </div>
     :
@@ -171,7 +171,7 @@ function CardList({ cards, shuffleClickHandler }) {
     <div>
       <h2>Cards</h2>
       <div style={cardListStyle}>
-        {cards.map((card, index) => (
+        {Array.isArray(cards) && cards.map((card, index) => (
           <div key={index}>
             {card.value}, {card.typ}
           </div>
