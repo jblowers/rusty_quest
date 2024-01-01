@@ -21,38 +21,8 @@ function App() {
     setIpAddress(tempIp);
   };
 
-  const fetchGameState = useCallback(() => {    
-    fetch(`${ipAddress}/game_state`)
-    .then(response => response.json())
-    .then(data => {
-      setGameState(data);
-    })
-    .catch(error => console.error('Error fetching data:', error));
-  }, [ipAddress]);
 
-  useEffect(() => {
-    fetchGameState();
-    localStorage.setItem('ipAddress', ipAddress);
-  }, [fetchGameState,ipAddress]);
-
-  const handleShuffleClick = () => {
-    fetch(`${ipAddress}/shuffle_deck`, { method: 'POST' }) // Assuming POST for shuffle
-      .then(response => {
-        if (response.ok) {
-          return fetchGameState();
-        } else {
-          throw new Error('Shuffle failed');
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        setGameState(data);
-      })
-      .catch(error => console.error('Error:', error));
-  };
-
-
-
+  // START added 12/30
 
   const handleNewGame = async () => {
     setIsLoading(true);
@@ -73,7 +43,6 @@ function App() {
     }
   };
 
-  // added 12/30
   
   // const [gameState, setGameState] = useState({});
   const [gameId, setGameId] = useState(null);
@@ -93,6 +62,23 @@ function App() {
       setIsLoading(false);
     }
   };
+  const handleShuffleClick = () => {
+      fetch(`${ipAddress}/game_state/${gameId}/shuffle_deck`, { method: 'POST' }) // Assuming POST for shuffle
+        .then(response => {
+          // if (response.ok) {
+          //   return fetchGameState();
+          // } else {
+          //   throw new Error('Shuffle failed');
+          // }
+        })
+        .then(response => response.json())
+        .then(data => {
+          setGameState(data);
+        })
+        .catch(error => console.error('Error:', error));
+    };
+  
+  // END added 12/30
 
   const handleSelectChange = (event) => {
     setTempIp(event.target.value);
@@ -111,7 +97,7 @@ function App() {
         <input id="ipToSetInput" type="text" value={tempIp} onChange={handleInputChange} />
   
         <button onClick={applyIpAddress}>Apply IP Address</button>
-        <button onClick={fetchGameState}>Fetch Data</button>
+        {/* <button onClick={fetchGameState}>Fetch Data</button> */}
         <br />
         <label htmlFor="autoLoadSelect">Auto load</label>
         <select id="autoLoadSelect" value={ipAddress} onChange={handleSelectChange}>
@@ -123,25 +109,16 @@ function App() {
     );
   }
 
-
   return (
     <div className="App">
       <header className="App-header">
         {
           <IpAddressConfiguration />
         }
-        {gameState ? (
-          <div>
-            {/* ... rest of your component ... */}
-            <PlayerList players={gameState.players} />
-            <hr />
-            <CardList cards={gameState.deck.cards} shuffleClickHandler={handleShuffleClick} />
-            <hr />
-            <CreateGame gamestate={gameState} gameId={gameId} handleNewGame={handleNewGame} />
-          </div>
-        ) : (
-          <p>Loading game state...</p>
-        )}
+        { 
+          <CreateGame gameState={gameState} gameId={gameId} isLoading={isLoading} handleNewGame={handleNewGame} refreshGameState={refreshGameState} handleShuffleClick={handleShuffleClick}/>
+          
+        }
       </header>
     </div>
   );
@@ -150,12 +127,14 @@ function App() {
 export default App;
 
 
-function CreateGame({gamestate,gameId,handleNewGame}) {
+function CreateGame({gameState,gameId,isLoading,handleNewGame,refreshGameState, handleShuffleClick}) {
   return (
     <div className="App">
       <button onClick={handleNewGame} disabled={isLoading}>
         {isLoading ? 'Loading...' : 'Start New Game'}
       </button>
+    { gameState?
+    <div>
       <button onClick={refreshGameState} disabled={isLoading || !gameId}>
         Refresh Game State
       </button>
@@ -167,6 +146,13 @@ function CreateGame({gamestate,gameId,handleNewGame}) {
           style={{ width: '100%', height: '300px' }}
         />
       </div>
+      <div>
+        <CardList cards={gameState.deck} shuffleClickHandler={handleShuffleClick} />
+      </div>
+    </div>
+    :
+    <h1>Loading...</h1>
+    }
     </div>
   );
 }
@@ -218,3 +204,40 @@ function PlayerList({ players }) {
     </div>
   );
 }
+
+
+
+// Moving examples down here to reference later. 
+// TODO: Delete when more established above
+/*
+  // const fetchGameState = useCallback(() => {    
+  //   fetch(`${ipAddress}/game_state`)
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     setGameState(data);
+  //   })
+  //   .catch(error => console.error('Error fetching data:', error));
+  // }, [ipAddress]);
+
+  // useEffect(() => {
+  //   fetchGameState();
+  //   localStorage.setItem('ipAddress', ipAddress);
+  // }, [fetchGameState,ipAddress]);
+
+  // const handleShuffleClick = () => {
+  //   fetch(`${ipAddress}/shuffle_deck`, { method: 'POST' }) // Assuming POST for shuffle
+  //     .then(response => {
+  //       if (response.ok) {
+  //         return fetchGameState();
+  //       } else {
+  //         throw new Error('Shuffle failed');
+  //       }
+  //     })
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       setGameState(data);
+  //     })
+  //     .catch(error => console.error('Error:', error));
+  // };
+  */
+
