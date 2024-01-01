@@ -55,6 +55,38 @@ async fn main() {
             warp::reply::json(&req_state)
         })
     };
+
+    // Cards route
+    let cards_id_route = {
+        let games = games.clone();
+        warp::path!("game_state" / u32 / "cards" / u32)
+        .map(move |game_id,card_id| {
+            let games = games.lock().unwrap();
+            // TODO: eventually needs to search through deck, discard, and player hands for cards; for now just search deck
+            
+            // want to go through deck.cards and find the one with the id 'card_id'
+            // once found, reply with json represenation of that card object
+            if let Some(game_state) = games.get(&game_id) {
+                // Search through deck for the card with 'card_id'
+                if let Some(card) = game_state.deck.cards.iter().find(|&c| c.id == card_id) {
+                    // Card found, reply with JSON representation
+                    warp::reply::json(&card)
+                } else {
+                    // Card not found, reply with an appropriate error message
+                    warp::reply::with_status(
+                        "Card not found",
+                        warp::http::StatusCode::NOT_FOUND,
+                    )
+                }
+            } else {
+                // Game not found, reply with an appropriate error message
+                warp::reply::with_status(
+                    "Game not found",
+                    warp::http::StatusCode::NOT_FOUND,
+                )
+            }
+        })
+    }
     // // Player route
     // // let gamestate_clone = gamestate.clone();
     // let player_route = warp::path!("players" / u32)
