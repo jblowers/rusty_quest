@@ -57,6 +57,26 @@ async fn main() {
         })
     };
 
+    let cards_route = {
+        let games = games.clone();
+        warp::path!("game_state" / u32 / "cards")
+        .map(move |game_id| {
+            let games = games.lock().unwrap();
+            
+            if let Some(game_state) = games.get(&game_id) {
+            let cards = game_state.get_deck().cards.clone();
+            warp::reply::json(&cards).into_response()
+        } else {
+            // Card not found, reply with an appropriate error message
+            warp::reply::with_status(
+                "game not found",
+                warp::http::StatusCode::NOT_FOUND,
+            ).into_response()
+        }
+        })
+
+    };
+
     // Cards route
     let cards_id_route = {
         let games = games.clone();
@@ -100,6 +120,8 @@ async fn main() {
     // Combine all routes
     let routes = new_game_route
         .or(game_state_id_route)
+        .or(cards_id_route)
+        .or(cards_route)
         .with(cors);
 
     warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
