@@ -110,6 +110,8 @@ function App() {
       </div>
     );
   }
+  let validIpAddress = typeof ipAddress === 'string' ? ipAddress : DEFAULT_URL;
+  console.log("IP Address:", validIpAddress); // Check what this logs
 
   return (
     <div className="App">
@@ -119,7 +121,7 @@ function App() {
         }
         { <div>
             <CreateGame gameState={gameState} gameId={gameId} isLoading={isLoading} handleNewGame={handleNewGame} refreshGameState={refreshGameState} handleShuffleClick={handleShuffleClick}/>
-            <DebuggingTool ipAddress={ipAddress} />
+            <DebuggingTool ipAddress={validIpAddress} />
           </div>
           }
       </header>
