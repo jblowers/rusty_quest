@@ -4,7 +4,8 @@ use warp::http::Method;
 use warp::Filter;
 use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
-
+use warp::http::StatusCode;
+use warp::reply::{self, Reply};
 
 
 
@@ -68,25 +69,25 @@ async fn main() {
             // once found, reply with json represenation of that card object
             if let Some(game_state) = games.get(&game_id) {
                 // Search through deck for the card with 'card_id'
-                if let Some(card) = game_state.deck.cards.iter().find(|&c| c.id == card_id) {
+                if let Some(card) = game_state.get_deck().cards.iter().find(|&c| c.id == card_id as i32) {
                     // Card found, reply with JSON representation
-                    warp::reply::json(&card)
+                    warp::reply::json(&card).into_response()
                 } else {
                     // Card not found, reply with an appropriate error message
                     warp::reply::with_status(
                         "Card not found",
                         warp::http::StatusCode::NOT_FOUND,
-                    )
+                    ).into_response()
                 }
             } else {
                 // Game not found, reply with an appropriate error message
                 warp::reply::with_status(
                     "Game not found",
                     warp::http::StatusCode::NOT_FOUND,
-                )
+                ).into_response()
             }
         })
-    }
+    };
     // // Player route
     // // let gamestate_clone = gamestate.clone();
     // let player_route = warp::path!("players" / u32)

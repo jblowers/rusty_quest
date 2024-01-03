@@ -54,7 +54,7 @@ impl GameState {
         }
     }
 
-    pub fn get_deck(&mut self) -> &CardCollection {
+    pub fn get_deck(&self) -> &CardCollection {
         &self.deck
     }
 
