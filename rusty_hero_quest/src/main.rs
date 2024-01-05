@@ -1,5 +1,7 @@
 mod game_state;
 use game_state::GameState;
+mod action_list;
+use action_list::GameActionList;
 use warp::http::Method;
 use warp::Filter;
 use std::sync::{Arc, Mutex};
@@ -23,6 +25,7 @@ async fn main() {
     // let mut games: HashMap<u32,GameState> = HashMap::new();
     let games: Arc<Mutex<HashMap<u32, GameState>>> = Arc::new(Mutex::new(HashMap::new()));
 
+    let mut actionlist = action_list::GameActionList::new();
 
     let cors = warp::cors()
         .allow_any_origin()
@@ -76,6 +79,10 @@ async fn main() {
         })
 
     };
+
+    // let actions_route = {
+
+    // };
 
     // Cards route
     let cards_id_route = {
