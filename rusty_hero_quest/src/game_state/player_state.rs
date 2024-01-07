@@ -3,7 +3,7 @@ use serde::{Serialize, Deserialize};
 
 
 // Player data
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
 pub struct Player {
     pub id: u32,
     pub name: String,
