@@ -40,7 +40,7 @@ fn test_add_card() {
     let mut coll = card_collection::CardCollection::new();
     let good = card_collection::CardType::Good;
     let val = 10;
-    coll.add_card(card_collection::Card {typ:good, value: val, state: card_collection::CardState::InUse});
+    coll.add_card(card_collection::Card {id: 1, typ:good, value: val, state: card_collection::CardState::InUse});
     assert_eq!(coll.cards.len(), 1, "Expect only 1 card in the deck");
     // assert_eq!(coll.cards[0].typ,good);
     assert_eq!(coll.cards[0].value,val);

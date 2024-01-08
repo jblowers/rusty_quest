@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useCallback  } from 'react';
+import DebuggingTool from './DebuggingTool'; // Adjust the import path if necessary
+
 import './App.css';
 
 const DEFAULT_URL = 'http://192.168.0.134:3030';
@@ -21,39 +23,70 @@ function App() {
     setIpAddress(tempIp);
   };
 
-  const fetchGameState = useCallback(() => {    
-    fetch(`${ipAddress}/game_state`)
-    .then(response => response.json())
-    .then(data => {
+
+  // START added 12/30
+
+  const handleNewGame = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${ipAddress}/game_state/new_game`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
       setGameState(data);
-    })
-    .catch(error => console.error('Error fetching data:', error));
-  }, [ipAddress]);
-
-  useEffect(() => {
-    fetchGameState();
-    localStorage.setItem('ipAddress', ipAddress);
-  }, [fetchGameState,ipAddress]);
-
-  const handleShuffleClick = () => {
-    fetch(`${ipAddress}/shuffle_deck`, { method: 'POST' }) // Assuming POST for shuffle
-      .then(response => {
-        if (response.ok) {
-          return fetchGameState();
-        } else {
-          throw new Error('Shuffle failed');
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        setGameState(data);
-      })
-      .catch(error => console.error('Error:', error));
+      setGameId(data.id);
+    } catch (error) {
+      console.error('Error fetching new game:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  
+  // const [gameState, setGameState] = useState({});
+  const [gameId, setGameId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const refreshGameState = async () => {
+    if (!gameId) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${ipAddress}/game_state/${gameId}`);
+      const data = await response.json();
+      setGameState(data);
+    } catch (error) {
+      console.error('Error fetching game state:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleShuffleClick = () => {
+      fetch(`${ipAddress}/game_state/${gameId}/shuffle_deck`, { method: 'POST' }) // Assuming POST for shuffle
+        .then(response => {
+          // if (response.ok) {
+          //   return fetchGameState();
+          // } else {
+          //   throw new Error('Shuffle failed');
+          // }
+        })
+        .then(response => response.json())
+        .then(data => {
+          setGameState(data);
+        })
+        .catch(error => console.error('Error:', error));
+    };
+  
+  // END added 12/30
 
   const handleSelectChange = (event) => {
     setTempIp(event.target.value);
   };
+
+  
   
   function IpAddressConfiguration() {
     return (
@@ -66,7 +99,7 @@ function App() {
         <input id="ipToSetInput" type="text" value={tempIp} onChange={handleInputChange} />
   
         <button onClick={applyIpAddress}>Apply IP Address</button>
-        <button onClick={fetchGameState}>Fetch Data</button>
+        {/* <button onClick={fetchGameState}>Fetch Data</button> */}
         <br />
         <label htmlFor="autoLoadSelect">Auto load</label>
         <select id="autoLoadSelect" value={ipAddress} onChange={handleSelectChange}>
@@ -77,7 +110,8 @@ function App() {
       </div>
     );
   }
-
+  let validIpAddress = typeof ipAddress === 'string' ? ipAddress : DEFAULT_URL;
+  console.log("IP Address:", validIpAddress); // Check what this logs
 
   return (
     <div className="App">
@@ -85,16 +119,11 @@ function App() {
         {
           <IpAddressConfiguration />
         }
-        {gameState ? (
-          <div>
-            {/* ... rest of your component ... */}
-            <PlayerList players={gameState.players} />
-            <hr />
-            <CardList cards={gameState.deck.cards} shuffleClickHandler={handleShuffleClick} />
+        { <div>
+            <CreateGame gameState={gameState} gameId={gameId} isLoading={isLoading} handleNewGame={handleNewGame} refreshGameState={refreshGameState} handleShuffleClick={handleShuffleClick}/>
+            <DebuggingTool ipAddress={validIpAddress} />
           </div>
-        ) : (
-          <p>Loading game state...</p>
-        )}
+          }
       </header>
     </div>
   );
@@ -102,6 +131,36 @@ function App() {
 
 export default App;
 
+
+function CreateGame({gameState,gameId,isLoading,handleNewGame,refreshGameState, handleShuffleClick}) {
+  return (
+    <div className="App">
+      <button onClick={handleNewGame} disabled={isLoading}>
+        {isLoading ? 'Loading...' : 'Start New Game'}
+      </button>
+    { gameState?
+    <div>
+      <button onClick={refreshGameState} disabled={isLoading || !gameId}>
+        Refresh Game State
+      </button>
+      <div>
+        <h2>Game State:</h2>
+        <textarea
+          value={JSON.stringify(gameState, null, 2)}
+          readOnly
+          style={{ width: '100%', height: '300px' }}
+        />
+      </div>
+      <div>
+        <CardList cards={gameState.deck.cards} shuffleClickHandler={handleShuffleClick} />
+      </div>
+    </div>
+    :
+    <h1>Loading...</h1>
+    }
+    </div>
+  );
+}
 
 
 function CardList({ cards, shuffleClickHandler }) {
@@ -117,7 +176,7 @@ function CardList({ cards, shuffleClickHandler }) {
     <div>
       <h2>Cards</h2>
       <div style={cardListStyle}>
-        {cards.map((card, index) => (
+        {Array.isArray(cards) && cards.map((card, index) => (
           <div key={index}>
             {card.value}, {card.typ}
           </div>
@@ -150,3 +209,40 @@ function PlayerList({ players }) {
     </div>
   );
 }
+
+
+
+// Moving examples down here to reference later. 
+// TODO: Delete when more established above
+/*
+  // const fetchGameState = useCallback(() => {    
+  //   fetch(`${ipAddress}/game_state`)
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     setGameState(data);
+  //   })
+  //   .catch(error => console.error('Error fetching data:', error));
+  // }, [ipAddress]);
+
+  // useEffect(() => {
+  //   fetchGameState();
+  //   localStorage.setItem('ipAddress', ipAddress);
+  // }, [fetchGameState,ipAddress]);
+
+  // const handleShuffleClick = () => {
+  //   fetch(`${ipAddress}/shuffle_deck`, { method: 'POST' }) // Assuming POST for shuffle
+  //     .then(response => {
+  //       if (response.ok) {
+  //         return fetchGameState();
+  //       } else {
+  //         throw new Error('Shuffle failed');
+  //       }
+  //     })
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       setGameState(data);
+  //     })
+  //     .catch(error => console.error('Error:', error));
+  // };
+  */
+
