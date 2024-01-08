@@ -2,6 +2,7 @@ mod game_state;
 use game_state::GameState;
 mod action_list;
 use action_list::GameActionList;
+use action_list::ActionInfoList;
 use action_list::GameAction;
 use warp::http::Method;
 use warp::Filter;
@@ -15,6 +16,9 @@ use warp::reply::{self, Reply};
 #[cfg(test)]
 mod tests;
 
+// static ACTIONLIST: Lazy<ActionInfoList> = Lazy::new(|| {
+//     ActionInfoList::new()
+// });
 
 // fn main() {
 
@@ -26,7 +30,7 @@ async fn main() {
     let games: Arc<Mutex<HashMap<u32, GameState>>> = Arc::new(Mutex::new(HashMap::new()));
 
     // TODO: design how this will get updated after each route below
-    let actionlist_vec: Arc<Mutex<HashMap<u32, GameActionList>>> = Arc::new(Mutex::new(HashMap::new()));
+    let actionlist = ActionInfoList::new();
 
     let cors = warp::cors()
         .allow_any_origin()
@@ -34,14 +38,11 @@ async fn main() {
         .allow_headers(vec!["Content-Type"]);                           
 
 
-    let actions_route = {
-        // need to respond with all the currently available actions
-        let actionlist_vec = actionlist_vec.clone();
-        warp::path!("game_state" / u32 / "actionlist")
-        .map(move |game_id| {
-            let actionlist_vec = actionlist_vec.lock().unwrap();
-            let actions = actionlist_vec.get(&game_id).cloned();
-            warp::reply::json(&actions).into_response()
+    let action_info_route = {
+        // need to respond with all the actions and their associated info (to be cached by client)
+        warp::path!("actionlistinfo")
+        .map(move || {
+            warp::reply::json(&actionlist).into_response()
         })
 
     };
@@ -49,18 +50,16 @@ async fn main() {
     // let gamestate_clone = gamestate.clone();
     let new_game_route = {
         let games = games.clone();
-        let actionlist_vec = actionlist_vec.clone();
         warp::path!("game_state" / "new_game")
         .map(move || {
-            let mut actionlist_vec = actionlist_vec.lock().unwrap();
             let mut games = games.lock().unwrap();
             let new_id = games.len() as u32;
             let new_game_state = GameState::new_game(new_id);
             games.insert(new_id,new_game_state);
 
-            let mut new_action_list = GameActionList::new();
-            new_action_list.add_action(GameAction::StartGame);
-            actionlist_vec.insert(new_id,new_action_list);
+            // let mut new_action_list = GameActionList::new();
+            // new_action_list.add_action(GameAction::StartGame);
+            // actionlist_vec.insert(new_id,new_action_list);
 
             let new_game_state = games.get(&new_id).cloned();
             warp::reply::json(&new_game_state)
@@ -145,7 +144,7 @@ async fn main() {
         .or(game_state_id_route)
         .or(cards_id_route)
         .or(cards_route)
-        .or(actions_route)
+        .or(action_info_route)
         .with(cors);
 
     warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
