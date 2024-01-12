@@ -4,6 +4,8 @@ mod action_list;
 use action_list::GameActionList;
 use action_list::ActionInfoList;
 use action_list::GameAction;
+use crate::game_state::player_state::Player;
+use crate::game_state::card_collection::CardCollection;
 use warp::http::Method;
 use warp::Filter;
 use std::sync::{Arc, Mutex};
@@ -65,6 +67,22 @@ async fn main() {
             warp::reply::json(&new_game_state)
         })
     };
+
+    // add a new player with a name
+    let new_player_route = {
+        let games = games.clone();
+        warp::path!("game_state" / u32 / "new_player" / String)
+        .map(move |game_id, player_name| {
+            let mut games = games.lock().unwrap();
+            let mut sel_game = games.get_mut(&game_id).expect("Game ID not found!");
+            // let new_id = sel_game.players.len() as u32;
+            let new_id = sel_game.add_player(Player::new_with_info(0,player_name));
+            sel_game.add_action_for_player(new_id,GameAction::StartGame);
+            
+            
+            warp::reply::json(&sel_game)
+        })
+    };
     // // Game state route
     // let gamestate_clone = gamestate.clone();
     let game_state_id_route = {
@@ -78,13 +96,40 @@ async fn main() {
         })
     };
 
+    let player_start_game_route = {
+        let games = games.clone();
+        warp::path!("game_state" / u32 / "player_actions" / u32 / "start_game")
+        .map(move |game_id,player_id| {
+            let mut games = games.lock().unwrap();
+
+            if let Some(game_state) = games.get_mut(&game_id) {
+                // now do whatever we need to do to the player state or game state
+                // in order to start a game.
+                // such as... 
+                //      set player position to HOME (space[0])
+                //      populate the GameActionList for the player
+                //      fill player's hand with drawn cards
+                //      ... other things I'm sure.
+                let mut drawn_cards = CardCollection::new();
+                for _i in 0..4 {
+                    drawn_cards.add_card(game_state.draw_card().expect("deck is empty"));
+                }
+                if let Some(player_state) = game_state.players.get_mut(&player_id) {
+                    player_state.add_to_hand(drawn_cards);
+                }
+            }
+            let sel_game = games.get(&game_id).cloned();
+            warp::reply::json(&sel_game)
+        })
+    };
+
     let cards_route = {
         let games = games.clone();
         warp::path!("game_state" / u32 / "cards")
         .map(move |game_id| {
             let games = games.lock().unwrap();
             
-            if let Some(game_state) = games.get(&game_id) {
+        if let Some(game_state) = games.get(&game_id) {
             let cards = game_state.get_deck().cards.clone();
             warp::reply::json(&cards).into_response()
         } else {
@@ -145,6 +190,8 @@ async fn main() {
         .or(cards_id_route)
         .or(cards_route)
         .or(action_info_route)
+        .or(new_player_route)
+        .or(player_start_game_route)
         .with(cors);
 
     warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;

@@ -1,6 +1,4 @@
-
 use serde::{Serialize, Deserialize};
-
 use std::collections::HashMap;
 
 
@@ -42,6 +40,7 @@ impl GameAction {
             // ... other actions ...
         }
     }
+    // needs to be updated when new GameActions are added
     fn iter_variants() -> &'static [GameAction] {
         & [
             GameAction::StartGame,

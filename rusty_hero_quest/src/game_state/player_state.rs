@@ -34,6 +34,22 @@ impl Player {
             hand: hand,
         }
     }
+    pub fn new_with_info(id: u32, name: String) -> Self {
+        let mut hand = card_collection::CardCollection::new();
+        Self {
+            id: id,
+            name: name.to_string(),
+            position: 0,
+            combat_skill: 0,
+            defense_skill: 0,
+            wounds: 0,
+            equipment_combat_score: 1,
+            equipment_defense_score: 0,
+            ability_combat_score: 0,
+            ability_defense_score: 0,
+            hand: hand,
+        }
+    }
 
 
     pub fn add_to_hand(&mut self,mut cardcoll: card_collection::CardCollection) {
