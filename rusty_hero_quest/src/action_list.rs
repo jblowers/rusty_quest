@@ -71,6 +71,10 @@ impl GameActionList {
             actions : Vec::new(),
         }
     }
+
+    pub fn contains(&self, action: GameAction) -> bool{
+        self.actions.contains(&action)
+    }
 }
 
 /*   ADDING ACTION_LIST_INFO structure */

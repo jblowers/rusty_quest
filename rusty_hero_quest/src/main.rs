@@ -6,6 +6,7 @@ use action_list::ActionInfoList;
 use action_list::GameAction;
 use crate::game_state::player_state::Player;
 use crate::game_state::card_collection::CardCollection;
+use crate::game_state::card_collection;
 use warp::http::Method;
 use warp::Filter;
 use std::sync::{Arc, Mutex};
@@ -103,6 +104,12 @@ async fn main() {
             let mut games = games.lock().unwrap();
 
             if let Some(game_state) = games.get_mut(&game_id) {
+                // first check if this action is even valid
+                if let Some(actions) = game_state.actions_map.get(&player_id) {
+                    if !actions.contains(GameAction::StartGame) {
+                        // return some error here so the client knows they tried an invalid action.
+                    }
+                }
                 // now do whatever we need to do to the player state or game state
                 // in order to start a game.
                 // such as... 
@@ -112,12 +119,15 @@ async fn main() {
                 //      ... other things I'm sure.
                 let mut drawn_cards = CardCollection::new();
                 for _i in 0..4 {
-                    drawn_cards.add_card(game_state.draw_card().expect("deck is empty"));
+                    let mut card = game_state.draw_card().expect("deck is empty!");
+                    card.state = card_collection::CardState::PlayerHand;
+                    drawn_cards.add_card(card);
                 }
                 if let Some(player_state) = game_state.players.get_mut(&player_id) {
                     player_state.add_to_hand(drawn_cards);
                 }
             }
+            // need to remove the StartGame action from the ActionList at this point
             let sel_game = games.get(&game_id).cloned();
             warp::reply::json(&sel_game)
         })
