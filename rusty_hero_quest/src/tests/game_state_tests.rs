@@ -52,7 +52,7 @@ fn add_card_to_discard_pile() {
 fn shuffle_discard_into_deck() {
     let mut gs = game_state::GameState::new();
     for i in 0..gs.get_deck().size() {
-        let card = gs.draw_card(0);
+        let card = gs.draw_card();
         gs.discard_card(card.unwrap());
     }
     assert_eq!(gs.get_deck().size(),0,"deck size should be zero");
