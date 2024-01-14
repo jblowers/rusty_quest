@@ -1,6 +1,6 @@
 
 
-const PlayerHand = ({ cards }) => {
+const CardCollectionComponent = ({ cards }) => {
     return (
       <div>
         {cards.map((card, index) => (
