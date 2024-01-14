@@ -25,10 +25,10 @@ function DebuggingTool(ipAddress) {
             })
             .then(data => {
                 const formattedResponse = JSON.stringify(data, null, 2);
-                setResponseLog(prevLog => prevLog + requestLog + "Response:\n" + formattedResponse + "\n\n");
+                setResponseLog(prevLog => requestLog + "Response:\n" + formattedResponse + "\n\n" + prevLog);
             })
             .catch(error => {
-                setResponseLog(prevLog => prevLog + requestLog + "Error: " + error + "\n\n");
+                setResponseLog(prevLog => requestLog + "Error: " + error + "\n\n" + prevLog);
             });
 };
 
