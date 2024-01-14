@@ -93,6 +93,7 @@ impl GameState {
         self.players.insert(id,player);
         let action_list = GameActionList::new();
         self.actions_map.insert(id,action_list);
+        self.active_player_id = id;
         return id;
     }
 
