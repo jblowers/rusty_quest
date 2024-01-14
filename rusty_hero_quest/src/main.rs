@@ -53,7 +53,7 @@ async fn main() {
     // let gamestate_clone = gamestate.clone();
     let new_game_route = {
         let games = games.clone();
-        warp::path!("game_state" / "new_game")
+        warp::path!("new_game")
         .map(move || {
             let mut games = games.lock().unwrap();
             let new_id = games.len() as u32;
@@ -66,6 +66,16 @@ async fn main() {
 
             let new_game_state = games.get(&new_id).cloned();
             warp::reply::json(&new_game_state)
+        })
+    };
+    // Game List endpoint
+    let game_list_route = {
+        let games = games.clone();
+        warp::path!("game_list")
+        .map(move || {            
+            let mut games = games.lock().unwrap();
+            let game_ids: Vec<u32> = games.keys().cloned().collect();
+            warp::reply::json(&game_ids)
         })
     };
 
@@ -202,6 +212,7 @@ async fn main() {
         .or(action_info_route)
         .or(new_player_route)
         .or(player_start_game_route)
+        .or(game_list_route)
         .with(cors);
 
     warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
