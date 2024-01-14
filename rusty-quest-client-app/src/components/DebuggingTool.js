@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const DEFAULT_URL = "http://192.168.0.134:3030"; // Replace with your server's IP
 
-function DebuggingTool(ipAddress) {
+function DebuggingTool(ipAddress, selectedGameId) {
     const [endpoint, setEndpoint] = useState('/game_state/0');
     const [responseLog, setResponseLog] = useState('');
 
@@ -30,7 +30,11 @@ function DebuggingTool(ipAddress) {
             .catch(error => {
                 setResponseLog(prevLog => requestLog + "Error: " + error + "\n\n" + prevLog);
             });
-};
+        };
+
+    function onNewPlayerDebug() {
+        // setEndpoint("/game_state/{selectedGameId}/new_player/")
+    }
 
     return (
         <div>
@@ -47,6 +51,7 @@ function DebuggingTool(ipAddress) {
             <div>
                 <textarea value={responseLog} rows="10" cols="50" readOnly style={{ whiteSpace: 'pre' }}></textarea>
             </div>
+            <button onClick={onNewPlayerDebug}>New Player</button>
         </div>
     );
 }

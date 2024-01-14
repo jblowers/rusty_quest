@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-const GameManagementComp = ({ipAddress, onSelectGame}) => {
+const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
 
     const [gameList, setGameList] = useState([]);
     const [selectedGame, setSelectedGame] = useState('');
@@ -46,6 +46,10 @@ const GameManagementComp = ({ipAddress, onSelectGame}) => {
                 ))}
             </select>
             <button onClick={handleSelectGame}>Select Game</button>
+            <div>
+                <button onClick={refreshGameState} value={selectedGame}>Refresh Game State</button> 
+                {/* maybe dont' need the refresh button anymore */}
+            </div>
         </div>
     );
 }
