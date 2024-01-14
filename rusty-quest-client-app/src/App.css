@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; /* Three columns with the middle one wider */
+  gap: 10px; /* Space between columns */
+}
+
+.column {
+  padding: 10px;
+}
+

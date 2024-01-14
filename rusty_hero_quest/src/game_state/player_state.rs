@@ -7,7 +7,7 @@ use serde::{Serialize, Deserialize};
 pub struct Player {
     pub id: u32,
     pub name: String,
-    position: u32,
+    pub position: u32,
     combat_skill: u8,
     defense_skill: u8,
     wounds: u8,
