@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback  } from 'react';
-import DebuggingTool from './DebuggingTool'; // Adjust the import path if necessary
+import DebuggingTool from './components/DebuggingTool'; // Adjust the import path if necessary
+import GameBoard from './components/GameBoard';
 
 import './App.css';
 
@@ -114,17 +115,29 @@ function App() {
   console.log("IP Address:", validIpAddress); // Check what this logs
 
   return (
-    <div className="App">
-      <header className="App-header">
-        {
+    <div>
+      <div className="App">
+      <div className="container">
+        <div className="column">
           <IpAddressConfiguration />
-        }
-        { <div>
-            <CreateGame gameState={gameState} gameId={gameId} isLoading={isLoading} handleNewGame={handleNewGame} refreshGameState={refreshGameState} handleShuffleClick={handleShuffleClick}/>
-            <DebuggingTool ipAddress={validIpAddress} />
-          </div>
+        </div>
+        <div className="column">
+          <CreateGame gameState={gameState} gameId={gameId} isLoading={isLoading} handleNewGame={handleNewGame} refreshGameState={refreshGameState} handleShuffleClick={handleShuffleClick}/>
+        </div>
+        <div className="column">
+          <DebuggingTool ipAddress={validIpAddress} />
+        </div>
+      </div> 
+        <header className="App-header">
+          {
           }
-      </header>
+          {/* { <div>
+              <CreateGame gameState={gameState} gameId={gameId} isLoading={isLoading} handleNewGame={handleNewGame} refreshGameState={refreshGameState} handleShuffleClick={handleShuffleClick}/>
+              <DebuggingTool ipAddress={validIpAddress} />
+            </div>
+            } */}
+        </header>
+      </div>
     </div>
   );
 }
@@ -153,6 +166,11 @@ function CreateGame({gameState,gameId,isLoading,handleNewGame,refreshGameState, 
       </div>
       <div>
         <CardList cards={gameState.deck.cards} shuffleClickHandler={handleShuffleClick} />
+        { gameState.players && gameState.players.length > 0 ?
+          <GameBoard spaces={gameState.board.spaces} activePlayerPosition={gameState.players[gameState.active_player_id].position} />
+          :
+          <h4>No active players.</h4>
+        }
       </div>
     </div>
     :
