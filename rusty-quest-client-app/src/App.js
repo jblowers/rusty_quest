@@ -43,6 +43,7 @@ function App() {
   };
 
   const onSelectGameChange = (gameid) => {
+    console.log(`Game change hit. ${gameid}`);
     setSelectedGameId(gameid);
     fetchGameState(gameid);
   }
@@ -73,7 +74,7 @@ function App() {
             }
           </div>
           <div className="column">
-            <DebuggingTool ipAddress={ipAddress}/>
+            <DebuggingTool ipAddress={ipAddress} selectedGameId={selectedGameId}/>
           </div>
         </div> 
       </div>

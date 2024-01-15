@@ -16,10 +16,14 @@ const GameInfoComp = ({gameState}) => {
     return (
         <div>
             <h3>Game Information</h3>  
-            <p>Game ID: {gameState.id}</p>
-            <p>Player Count: {playerCount}</p>
-            <p>Active Player: {activePlayer ? activePlayer.name : 'N/A'}</p>
-            <p>Turn: {gameState.turn}</p>
+        <div className='game-info-container'>
+            <div className="text-container">
+                <p>Game ID: {gameState.id}</p>
+                <p>Player Count: {playerCount}</p>
+                <p>Active Player: {activePlayer ? activePlayer.name : 'N/A'}</p>
+                <p>Turn: {gameState.turn}</p>
+            </div>
+        </div>
         </div>
     );
 }

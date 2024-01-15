@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 
 const DEFAULT_URL = "http://192.168.0.134:3030"; // Replace with your server's IP
 
-function DebuggingTool(ipAddress, selectedGameId) {
+function DebuggingTool({ ipAddress, selectedGameId }) {
     const [endpoint, setEndpoint] = useState('/game_state/0');
     const [responseLog, setResponseLog] = useState('');
+    const [playerName, setPlayerName] = useState(`player_${selectedGameId}`);
+
+    // const [gameId, setGameId] = useState(selectedGameId);
 
     const clearLogs = () => {
         setResponseLog('');
@@ -32,8 +35,9 @@ function DebuggingTool(ipAddress, selectedGameId) {
             });
         };
 
-    function onNewPlayerDebug() {
-        // setEndpoint("/game_state/{selectedGameId}/new_player/")
+    const onNewPlayerDebug = () => {
+        const endpoint = `/game_state/${selectedGameId}/new_player/${playerName}`;
+        setEndpoint(endpoint);
     }
 
     return (
@@ -52,6 +56,7 @@ function DebuggingTool(ipAddress, selectedGameId) {
                 <textarea value={responseLog} rows="10" cols="50" readOnly style={{ whiteSpace: 'pre' }}></textarea>
             </div>
             <button onClick={onNewPlayerDebug}>New Player</button>
+            <input type="text" value={playerName} onChange={e => setPlayerName(e.target.value)} placeholder={`player_${selectedGameId}`}/>
         </div>
     );
 }

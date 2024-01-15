@@ -7,18 +7,24 @@ const CardCollectionComponent = ({ cards, title}) => {
     overflowY: 'scroll', // Enable vertical scrolling
     border: '1px solid #ccc', // Optional, for better visibility
     padding: '10px',
-    margin: '10px 0'
+    margin: '10px 0',
+    maxWidth: '200px'
   };
     return (
-      <div style={containerStyles}>
+      <div>
+        <div>
         {title ?
           <h4>{title} Contents</h4>
           :
           <h4>Card Contents</h4>
-        }
-        {cards.map((card, index) => (
-          <CardComponent key={index} card={card} />
-        ))}
+        }</div> 
+        <div style={containerStyles} className="card-collection-container">
+          {cards.map((card, index) => (
+            <div className="text-container">
+              <CardComponent key={index} card={card} />
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
