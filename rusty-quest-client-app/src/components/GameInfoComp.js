@@ -1,13 +1,27 @@
 
 import React, { useState, useEffect } from 'react';
+import {GameStateProvider, useGameState} from '../contexts/GameStateContext';
 
-const GameInfoComp = ({gameState}) => {
-    if ( !gameState) {
-        return <p>No Game State Found</p>;
+const GameInfoComp = ({}) => {
+    // if ( !gameState) {
+        // return <p>No Game State Found</p>;
+    // }
+    const playerCount = -1;
+    const activePlayer = [];
+    const gameState = useGameState();
+    useEffect(() => {        
+        if (gameState && gameState.players) {
+            playerCount = Object.keys(gameState.players).length;
+            activePlayer = gameState.players[gameState.active_player_id];
+        } else {
+            console.error(`gameState.players not present...`);
+        }
+    },[gameState]);
+    if (!gameState) {
+        return (
+            <p>Error with game info</p>
+        );
     }
-    
-    const playerCount = Object.keys(gameState.players).length;
-    const activePlayer = gameState.players[gameState.active_player_id];
     
     // useEffect(() => {
     //     fetchGameList();

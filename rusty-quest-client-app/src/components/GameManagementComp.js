@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
+import { useIpAddress } from '../contexts/IpAddressContext';
 
 const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
-
+    const {iPAddress, setIPAddress} = useIpAddress();
     const [gameList, setGameList] = useState([]);
     const [selectedGame, setSelectedGame] = useState('none');
 
