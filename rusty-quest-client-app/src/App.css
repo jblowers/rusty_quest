@@ -61,6 +61,7 @@
   background-image: url('../public/CardCollection_Background.png');
   background-size: cover;
   background-position: center center;
+  /* min-width: 300px; */
   /* Other styles as previously defined */
 }
 
@@ -69,5 +70,33 @@
   background-size: cover;
   min-height: 400px;
   background-position: center center;
+}
+
+.server-ip-config-container {
+  background-image: url('../public/ServerIpConfig_Background.png');
+  background-size: cover;
+  background-position: center center;
+  width: 250px;
+  height: 250px;
+}
+
+
+.card-text-container {
+  background-color: rgba(255, 255, 255, 0.25); /* Semi-transparent white background */
+  /* padding: 5px; */
+  /* max-height: 200px; */
+}
+
+.card-container {
+  background-image: url('../public/Card_background.png');
+  background-size: cover;
+  background-position: center center;
+  min-height: 75px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 125px; /* Adjust based on your needs */
+  width: 125px; /* Adjust based on your needs */
+  border: 2px solid black; /* Optional, for visibility */
 }
 

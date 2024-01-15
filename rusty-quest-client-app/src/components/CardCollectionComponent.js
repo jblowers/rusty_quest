@@ -4,11 +4,13 @@ const CardCollectionComponent = ({ cards, title}) => {
 
   const containerStyles = {
     maxHeight: '300px', // Set a fixed height or max-height
-    overflowY: 'scroll', // Enable vertical scrolling
+    overflowX: 'scroll', // Enable vertical scrolling
     border: '1px solid #ccc', // Optional, for better visibility
     padding: '10px',
     margin: '10px 0',
-    maxWidth: '200px'
+    maxWidth: '500px',
+    display: 'flex',
+    flexDirection: 'row'
   };
     return (
       <div>

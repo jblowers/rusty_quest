@@ -5,6 +5,7 @@ import IpAddressConfiguration from './components/IpConfigComponent';
 import GameManagementComp from './components/GameManagementComp';
 import GameInfoComp from './components/GameInfoComp';
 import CardCollectionComponent from './components/CardCollectionComponent';
+import ActionsListComp from './components/ActionsListComp';
 
 import './App.css';
 
@@ -14,11 +15,24 @@ const DEFAULT_URL = 'http://192.168.0.134:3030';
 
 
 function App() {
+  const [actionInfoList, setActionInfoList] = useState({});
   const [gameState, setGameState] = useState(null);  
   const [selectedGameId, setSelectedGameId] = useState(null);
   const [ipAddress, setIpAddress] = useState(() => {
     return localStorage.getItem('ipAddress') || DEFAULT_URL;
   });
+
+
+  // caches and updates action list info
+  useEffect(() => {
+    console.log("fetching from: ");
+    console.log(`${ipAddress}/actionlistinfo`);
+    fetch(`${ipAddress}/actionlistinfo`)
+      .then(response => response.json())
+      .then(data => setActionInfoList(data))
+      .catch(error => console.error('Error fetching actions description:', error));
+  }, [ipAddress]);
+
 
   const fetchGameState = async (gameId) => {
     if (!gameId) {
@@ -36,14 +50,14 @@ function App() {
     } catch (error) {
         console.error('Error fetching game state:', error);
     }
-};
+  };
 
   const applyIpAddress = (event) => {
     setIpAddress(event.target.value);
   };
 
   const onSelectGameChange = (gameid) => {
-    console.log(`Game change hit. ${gameid}`);
+    console.log(`Game change hit. ${gameid}\tactionlist: ${actionInfoList}`);
     setSelectedGameId(gameid);
     fetchGameState(gameid);
   }
@@ -75,6 +89,9 @@ function App() {
           </div>
           <div className="column">
             <DebuggingTool ipAddress={ipAddress} selectedGameId={selectedGameId}/>
+            <hr></hr>
+            <hr></hr>
+            <ActionsListComp gameState={gameState} actionsListInfo={actionInfoList}/>
           </div>
         </div> 
       </div>
