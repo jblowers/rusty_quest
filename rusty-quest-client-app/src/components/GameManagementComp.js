@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
 
     const [gameList, setGameList] = useState([]);
-    const [selectedGame, setSelectedGame] = useState('');
+    const [selectedGame, setSelectedGame] = useState('none');
 
 
     const fetchGameList = () => {
@@ -34,13 +34,16 @@ const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
     };
     
     const handleSelectGame = () => {
-        onSelectGame(selectedGame);
+        if (selectedGame !== "none") {
+            onSelectGame(selectedGame);
+        }
     };
 
     return (
         <div>
             <button onClick={handleNewGame}>Start New Game</button>
             <select value={selectedGame} onChange={e => setSelectedGame(e.target.value)}>
+                <option key="none" value="">None</option>
                 {gameList.map(game => (
                     <option key={game} value={game}>{game}</option>
                 ))}
