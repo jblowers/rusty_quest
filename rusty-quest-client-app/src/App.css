@@ -57,14 +57,6 @@
   padding: 5px;
 }
 
-.card-collection-container {
-  background-image: url('../public/CardCollection_Background.png');
-  background-size: cover;
-  background-position: center center;
-  /* min-width: 300px; */
-  /* Other styles as previously defined */
-}
-
 .game-info-container {
   background-image: url('../public/HeroQuest_GameInfo_Background.png');
   background-size: cover;
@@ -80,6 +72,12 @@
   height: 250px;
 }
 
+.card-collection-container {
+  background-image: url('../public/CardCollection_Background.png');
+  background-size: cover;
+  background-position: center center;
+  min-height: 150px;
+}
 
 .card-text-container {
   background-color: rgba(255, 255, 255, 0.25); /* Semi-transparent white background */
