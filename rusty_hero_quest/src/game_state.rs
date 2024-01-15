@@ -5,19 +5,24 @@ use card_collection::CardState;
 use std::collections::HashMap;
 pub mod player_state;
 use player_state::Player;
+// pub mod action_list;
+use crate::action_list::GameActionList;
+use crate::action_list::GameAction;
 use serde::{Serialize, Deserialize};
 
 
 // Game state
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Clone,Debug,Serialize,Deserialize)]
 pub struct GameState {
-    players: HashMap<u32, Player>,
+    id: u32,
+    pub players: HashMap<u32, Player>,
     board: Board,
     deck: CardCollection,
     discard: CardCollection,
     // cards can also exist in player's hand... Need to track here or no?
     active_player_id: u32,
     turn: u32,
+    pub actions_map: HashMap<u32, GameActionList>,
 }
 
 impl GameState {
@@ -26,6 +31,7 @@ impl GameState {
         let mut deck = CardCollection::new();
         deck.populate_self_with_fresh_cards(52, CardState::Deck);
         GameState {
+            id: 0,
             players: HashMap::new(),
             board: Board {
                 spaces: vec![Space::Home],
@@ -34,10 +40,27 @@ impl GameState {
             discard: CardCollection::new(),
             active_player_id: 0,
             turn: 0,
+            actions_map: HashMap::new(),
+        }
+    }
+    pub fn new_game(game_id: u32) -> Self {                
+        let mut deck = CardCollection::new();
+        deck.populate_self_with_fresh_cards(52, CardState::Deck);
+        GameState {
+            id: game_id,
+            players: HashMap::new(),
+            board: Board {
+                spaces: vec![Space::Home],
+            },
+            deck,
+            discard: CardCollection::new(),
+            active_player_id: 0,
+            turn: 0,
+            actions_map: HashMap::new(),//GameActionList::new(),
         }
     }
 
-    pub fn get_deck(&mut self) -> &CardCollection {
+    pub fn get_deck(&self) -> &CardCollection {
         &self.deck
     }
 
@@ -63,14 +86,23 @@ impl GameState {
         self.deck.print_collection_contents();
     }
 
-    fn add_player(&mut self, mut player: Player) {
+    pub fn add_player(&mut self, mut player: Player) -> u32 {
         let id = self.players.len() as u32 + 1; // id is always the next incremented player value; 
         // TODO: will need to be addressed if players quit
         player.id = id;
         self.players.insert(id,player);
+        let action_list = GameActionList::new();
+        self.actions_map.insert(id,action_list);
+        self.active_player_id = id;
+        return id;
     }
 
-    pub fn draw_card(&mut self, _player_id: u32) -> Option<Card> { // option allows for checking if empty
+    pub fn add_action_for_player(&mut self, id: u32, action: GameAction) {
+        let mut actions_list = self.actions_map.get_mut(&id).expect("Player Id not found.");
+        actions_list.add_action(action);
+    }
+
+    pub fn draw_card(&mut self) -> Option<Card> { // option allows for checking if empty
         return self.deck.draw_card();
     }
 
@@ -95,6 +127,7 @@ impl PartialEq for GameState {
             && self.discard == other.discard
             && self.active_player_id == other.active_player_id
             && self.turn == other.turn
+            && self.id == other.id
     }
 }
 
@@ -106,7 +139,7 @@ impl PartialEq for GameState {
 
 
 
-#[derive(Debug,Serialize,Deserialize, PartialEq)]
+#[derive(Clone,Debug,Serialize,Deserialize, PartialEq)]
 struct Board {
     spaces: Vec<Space>,
 }

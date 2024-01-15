@@ -4,11 +4,6 @@ use crate::game_state::card_collection;
 
 
 const CARD_COUNT: u32 = 52;
-const FIRST_CARD: card_collection::Card = card_collection::Card {
-    typ: card_collection::CardType::Good,
-    value: 1,
-    state: card_collection::CardState::InUse,
-};
 
 
 #[test]
@@ -43,6 +38,7 @@ fn add_card_to_discard_pile() {
     let mut gs = game_state::GameState::new();
     assert_eq!(gs.get_discard().size(),0 as usize,"discard should be zero to start");
     let mut card = card_collection::Card {
+        id: 1,
         typ: card_collection::CardType::Good,
         value: 1,
         state: card_collection::CardState::InUse,
@@ -56,7 +52,7 @@ fn add_card_to_discard_pile() {
 fn shuffle_discard_into_deck() {
     let mut gs = game_state::GameState::new();
     for i in 0..gs.get_deck().size() {
-        let card = gs.draw_card(0);
+        let card = gs.draw_card();
         gs.discard_card(card.unwrap());
     }
     assert_eq!(gs.get_deck().size(),0,"deck size should be zero");

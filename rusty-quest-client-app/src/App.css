@@ -36,3 +36,65 @@
     transform: rotate(360deg);
   }
 }
+
+.text-element {
+  color: #000; /* Or any color that contrasts well with your background */
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); /* White shadow for dark text */
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; /* Three columns with the middle one wider */
+  gap: 10px; /* Space between columns */
+}
+
+.column {
+  padding: 10px;
+}
+
+.text-container {
+  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+  padding: 5px;
+}
+
+.game-info-container {
+  background-image: url('../public/HeroQuest_GameInfo_Background.png');
+  background-size: cover;
+  min-height: 400px;
+  background-position: center center;
+}
+
+.server-ip-config-container {
+  background-image: url('../public/ServerIpConfig_Background.png');
+  background-size: cover;
+  background-position: center center;
+  width: 250px;
+  height: 250px;
+}
+
+.card-collection-container {
+  background-image: url('../public/CardCollection_Background.png');
+  background-size: cover;
+  background-position: center center;
+  min-height: 150px;
+}
+
+.card-text-container {
+  background-color: rgba(255, 255, 255, 0.25); /* Semi-transparent white background */
+  /* padding: 5px; */
+  /* max-height: 200px; */
+}
+
+.card-container {
+  background-image: url('../public/Card_background.png');
+  background-size: cover;
+  background-position: center center;
+  min-height: 75px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 125px; /* Adjust based on your needs */
+  width: 125px; /* Adjust based on your needs */
+  border: 2px solid black; /* Optional, for visibility */
+}
+

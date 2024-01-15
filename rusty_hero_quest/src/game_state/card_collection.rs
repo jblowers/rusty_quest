@@ -5,7 +5,7 @@ use serde::{Serialize, Deserialize};
 
 pub const MAX_CARD_VALUE: u32 = 13;
 
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Clone,Debug,Serialize,Deserialize)]
 pub struct CardCollection {
     pub cards: VecDeque<Card>,
 }
@@ -43,6 +43,7 @@ impl CardCollection {
         self.cards.front()
     }
 
+    //TODO: ensure that this is actually valid ...
     pub fn get_cards_iterable(&mut self) -> Vec<Card> {
         // let coll_as_vec: Vec<Card> = self.cards.to_owned();
         let coll_as_vec: Vec<Card> = self.cards.iter().cloned().collect::<Vec<Card>>();
@@ -60,11 +61,14 @@ impl CardCollection {
     pub fn populate_self_with_fresh_cards(&mut self, card_count: u32, card_state: CardState) {        
         let mut deck = Vec::new();
         let count_each_type = card_count / MAX_CARD_VALUE / 2; // 52 by 13 by 2 is 2 cards for each value/type
+        let mut id_inc = 0;
         for _iteration in 0..count_each_type {
             // should hit this twice
             for i in 1..MAX_CARD_VALUE + 1 {
-                let good_card = Card {typ: CardType::Good, value: i, state: card_state.clone()};
-                let bad_card = Card {typ: CardType::Bad, value: i, state: card_state.clone()};
+                let good_card = Card {id: id_inc, typ: CardType::Good, value: i, state: card_state.clone()};
+                id_inc = id_inc+1;
+                let bad_card = Card { id: id_inc,typ: CardType::Bad, value: i, state: card_state.clone()};
+                id_inc = id_inc+1;
                 deck.push(good_card);
                 deck.push(bad_card);               
             }
@@ -81,7 +85,7 @@ impl CardCollection {
             } else {
                 "Bad"
             };
-            println!("\t {}\t{}",card.value,type_str);
+            println!("\tid: {}\tvalue: {}\ttype: {}",card.id,card.value,type_str);
         }
     }
     // Add other helper functions as needed
@@ -97,23 +101,24 @@ impl PartialEq for CardCollection {
 }
 
 
-#[derive(Clone,Debug,Serialize,Deserialize,PartialEq)]
-pub enum CardState {
-    Deck,
-    Discard,
-    PlayerHand,
-    InUse,
-}
-
-
 // Card data
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Card {
-    // id: u32,
+    pub id: i32,
     pub typ: CardType,
     pub value: u32,
     pub state: CardState,
 }
+
+#[derive(Clone,Debug,Serialize,Deserialize,PartialEq)]
+pub enum CardState {
+    Deck,
+    Discard,
+    PlayerHand, //(playerId)
+    InUse,
+}
+
+
 
 
 #[derive(Clone,Debug,Serialize,Deserialize)]
