@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import {useGameState} from '../contexts/GameStateContext';
+import * as ApiService from '../services/apiService';
+import { useIpAddress } from '../contexts/IpAddressContext';
 
 
-const ActionsListComp = ({ gameState, actionsListInfo}) => {
+const ActionsListComp = ({ actionsListInfo}) => {
     const [selectedAction, setSelectedAction] = useState(null);
+    const {gameState, setGameState } = useGameState();
+    const {ipAddress, setIpAddress} = useIpAddress();
     
     const handleActionSelect = (action) => {
         setSelectedAction(action);
@@ -17,10 +22,16 @@ const ActionsListComp = ({ gameState, actionsListInfo}) => {
 
     const sendAction = () => {
         if (selectedAction) {
-          // Implement what happens when an action is sent
-
-          console.log('Sending action:', selectedAction);
+            // Implement what happens when an action is sent            
+            ApiService.sendPlayerAction(ipAddress,gameState.id,gameState.active_player_id,selectedAction)
+                .then(data => checkResponse(data))
+                .catch(error => console.error('Error fetching actions description:', error));
+            console.log('Sending action:', selectedAction);
         }
+    };
+
+    const checkResponse = (data) => {
+        /// TODO: check for an error or other response from a sent action
     };
 
     return (

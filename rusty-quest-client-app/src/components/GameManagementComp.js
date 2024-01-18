@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import * as ApiService from '../services/apiService';
 import { useIpAddress } from '../contexts/IpAddressContext';
 
 const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
@@ -9,10 +10,10 @@ const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
 
 
     const fetchGameList = () => {
-        fetch(`${ipAddress}/game_list`)
-            .then(response => response.json())
-            .then(data => setGameList(data))
-            .catch(error => console.error('Error fetching game list:', error));
+        ApiService.fetchGameList(ipAddress)
+        .then(data => setGameList(data))
+        .catch(error => console.error('Error fetching Game State...:', error));
+
     };
 
     // Use useEffect to fetch game list on component mount and when ipAddress changes
@@ -40,6 +41,12 @@ const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
         }
     };
 
+    const refreshGameClicked = () => {
+        if (selectedGame !== "none") {
+            refreshGameState(selectedGame);
+        }
+    }
+
     return (
         <div>
             <button onClick={handleNewGame}>Start New Game</button>
@@ -51,8 +58,7 @@ const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
             </select>
             <button onClick={handleSelectGame}>Select Game</button>
             <div>
-                <button onClick={refreshGameState} value={selectedGame}>Refresh Game State</button> 
-                {/* maybe dont' need the refresh button anymore */}
+                <button onClick={refreshGameClicked} value={selectedGame}>Refresh Game State</button> 
             </div>
         </div>
     );

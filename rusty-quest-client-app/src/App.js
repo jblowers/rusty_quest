@@ -21,43 +21,19 @@ function App() {
 
 
   // // caches and updates action list info
-  // useEffect(() => {
-  //   console.log("fetching from: ");
-  //   console.log(`${ipAddress}/actionlistinfo`);
-  //   fetch(`${ipAddress}/actionlistinfo`)
-  //     .then(response => response.json())
-  //     .then(data => setActionInfoList(data))
-  //     .catch(error => console.error('Error fetching actions description:', error));
-  // }, [ipAddress]);
   useEffect(() => {
     ApiService.fetchActionInfoList(ipAddress)
       .then(data => setActionInfoList(data))
       .catch(error => console.error('Error fetching actions description:', error));
   }, [ipAddress]);
-  useEffect(() => {
-    ApiService.fetchGameState(ipAddress,selectedGameId)
-      .then(data => setGameState(data))
-      .catch(error => console.error('Error fetching Game State...:', error));
+  useEffect((selectedGameId,setGameState) => {
+    if (selectedGameId !== 'none') {
+      ApiService.fetchGameState(ipAddress,selectedGameId)
+        .then(data => setGameState(data))
+        .catch(error => console.error('Error fetching Game State...:', error));
+    }
   }, [ipAddress]);
 
-
-  // const fetchGameState = async (gameId) => {
-  //   if (!gameId) {
-  //       console.log("No game selected");
-  //       return;
-  //   }
-  //   try {
-  //       console.error(`${ipAddress}/game_state/${gameId}`);
-  //       const response = await fetch(`${ipAddress}/game_state/${gameId}`);
-  //       if (!response.ok) {
-  //           throw new Error('Network response was not ok');
-  //       }
-  //       const data = await response.json();
-  //       setGameState(data);
-  //   } catch (error) {
-  //       console.error('Error fetching game state:', error);
-  //   }
-  // };
 
   const fetchGameState = async (gameId) => {
     if (!gameId) {
@@ -65,6 +41,7 @@ function App() {
       return;
     }
     try {
+      console.log(`Fetching gamestate from ${ipAddress} / ${gameId}`);
       const data = await ApiService.fetchGameState(ipAddress, gameId);
       console.log(`Game state data: ${data}`);
       setGameState(data);
@@ -111,7 +88,7 @@ function App() {
           <DebuggingTool ipAddress={ipAddress} selectedGameId={selectedGameId}/>
           <hr></hr>
           <hr></hr>
-          <ActionsListComp gameState={gameState} actionsListInfo={actionInfoList}/>
+          <ActionsListComp actionsListInfo={actionInfoList}/>
         </div>
       </div> 
     </div>
