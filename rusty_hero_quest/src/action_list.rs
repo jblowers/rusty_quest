@@ -28,15 +28,15 @@ impl GameAction {
         }
     }
     
-    fn from_str(action_str: &str) -> Option<Self> {
-        match action_str {
-            "StartGame" => Some(GameAction::StartGame),
-            "MoveWithSelectedCard" => Some(GameAction::MoveWithSelectedCard),
-            "MoveWithGivenCard" => Some(GameAction::MoveWithGivenCard),
-            "TakeEquipment" => Some(GameAction::TakeEquipment),
-            "UpgradeCombat" => Some(GameAction::UpgradeCombat),
-            "UpgradeDefense" => Some(GameAction::UpgradeDefense),
-            "EndTurn" => Some(GameAction::EndTurn),
+    pub fn from_id(action_id: &u32) -> Option<Self> {
+        match action_id {
+            1 => Some(GameAction::StartGame),
+            2 => Some(GameAction::MoveWithSelectedCard),
+            3 => Some(GameAction::MoveWithGivenCard),
+            4 => Some(GameAction::TakeEquipment),
+            5 => Some(GameAction::UpgradeCombat),
+            6 => Some(GameAction::UpgradeDefense),
+            7 => Some(GameAction::EndTurn),
             // ... other actions ...
             _ => None,
         }
