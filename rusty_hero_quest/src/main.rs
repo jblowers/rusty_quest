@@ -195,6 +195,31 @@ async fn main() {
             }
         })
     };
+
+    let action_route = {
+        let games = games.clone();
+
+        warp::path!("game_state" / u32 / "players" / u32 / "action" / String)
+        .map(move |game_id, player_id, action| {
+            let games = games.lock().unwrap();
+            if let Some(game_state) = games.get(&game_id) {
+                if let Some(player) = game_state.players.get(&player_id) {
+                    if let Some(action) = GameAction::from_str(&action_str) {
+                    // apply the ${action} to the selected player
+                    // ...Seems like something the game_state should handle internally? Like a ... 'gs.apply_action(action)' sorta deal?
+
+                    }
+
+                }
+
+            }
+            
+            warp::reply::with_status(
+                "Game not found",
+                warp::http::StatusCode::NOT_FOUND,
+            ).into_response()
+        })
+    };
     // // Player route
     // // let gamestate_clone = gamestate.clone();
     // let player_route = warp::path!("players" / u32)
@@ -213,6 +238,7 @@ async fn main() {
         .or(new_player_route)
         .or(player_start_game_route)
         .or(game_list_route)
+        .or(action_route)
         .with(cors);
 
     warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
