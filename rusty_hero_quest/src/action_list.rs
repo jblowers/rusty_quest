@@ -42,6 +42,18 @@ impl GameAction {
         }
     }
 
+    pub fn id(&self) -> u32 {
+        match self {
+            GameAction::StartGame => 1,
+            GameAction::MoveWithSelectedCard => 2,
+            GameAction::MoveWithGivenCard => 3,
+            GameAction::TakeEquipment => 4,
+            GameAction::UpgradeCombat => 5,
+            GameAction::UpgradeDefense => 6,
+            GameAction::EndTurn => 7,
+        }
+    }
+
     fn description(&self) -> String {
         match self {
             GameAction::StartGame => "Begin a new game.".to_string(),
@@ -52,6 +64,18 @@ impl GameAction {
             GameAction::UpgradeDefense => "Discard cards to upgrade Defense. Should contain Card Id(s).".to_string(),
             GameAction::EndTurn => "End your turn".to_string(),
             // ... other actions ...
+        }
+    }
+
+    pub fn to_action_info(&self) -> ActionInfo {
+        match self {
+            GameAction::StartGame => ActionInfo::new(GameAction::StartGame),
+            GameAction::MoveWithSelectedCard => ActionInfo::new(GameAction::MoveWithSelectedCard),
+            GameAction::MoveWithGivenCard => ActionInfo::new(GameAction::MoveWithGivenCard),
+            GameAction::TakeEquipment => ActionInfo::new(GameAction::TakeEquipment),
+            GameAction::UpgradeCombat => ActionInfo::new(GameAction::UpgradeCombat),
+            GameAction::UpgradeDefense => ActionInfo::new(GameAction::UpgradeDefense),
+            GameAction::EndTurn => ActionInfo::new(GameAction::EndTurn),
         }
     }
     // needs to be updated when new GameActions are added
@@ -121,6 +145,7 @@ impl ActionInfoList {
 struct ActionInfo {
     endpoint: String,
     description: String,
+    id: u32,
 }
 
 impl ActionInfo {
@@ -128,6 +153,7 @@ impl ActionInfo {
         Self {
             endpoint: action.endpoint(),
             description: action.description(),
+            id: action.id(),
         }
     }
 }
