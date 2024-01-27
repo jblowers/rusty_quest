@@ -207,12 +207,30 @@ async fn main() {
                     if let Some(action) = GameAction::from_id(&action_id) {
                     // apply the ${action} to the selected player
                     // ...Seems like something the game_state should handle internally? Like a ... 'gs.apply_action(action)' sorta deal?
-                    // match action {
-                    //     GameAction::StartGame => {
-                    //         // deal cards to player's hand. flip first card for movement. present HOME space.
-                    //         // game_state.
-                    //     }
-                    // };
+                    match action {
+                        GameAction::StartGame => {
+                            // deal cards to player's hand. flip first card for movement. present HOME space.
+                            // game_state.
+                        }
+                        GameAction::MoveWithSelectedCard => {
+                            
+                        }
+                        GameAction::MoveWithGivenCard => {
+                            
+                        }
+                        GameAction::TakeEquipment => {
+                            
+                        }
+                        GameAction::UpgradeCombat => {
+                            
+                        }
+                        GameAction::UpgradeDefense => {
+                            
+                        }
+                        GameAction::EndTurn => {
+                            
+                        }
+                    };
 
                     }
 
