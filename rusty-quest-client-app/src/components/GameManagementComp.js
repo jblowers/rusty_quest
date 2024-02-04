@@ -1,21 +1,23 @@
 
 import React, { useState, useEffect } from 'react';
+import * as ApiService from '../services/apiService';
+import { useIpAddress } from '../contexts/IpAddressContext';
 
 const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
-
+    const {iPAddress, setIPAddress} = useIpAddress();
     const [gameList, setGameList] = useState([]);
     const [selectedGame, setSelectedGame] = useState('none');
 
 
     const fetchGameList = () => {
-        fetch(`${ipAddress}/game_list`)
-            .then(response => response.json())
-            .then(data => setGameList(data))
-            .catch(error => console.error('Error fetching game list:', error));
+        ApiService.fetchGameList(ipAddress)
+        .then(data => setGameList(data))
+        .catch(error => console.error('Error fetching Game State...:', error));
+
     };
 
     // Use useEffect to fetch game list on component mount and when ipAddress changes
-    useEffect(() => {
+    useEffect((fetchGameList) => {
         fetchGameList();
     }, [ipAddress]);
 
@@ -36,8 +38,15 @@ const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
     const handleSelectGame = () => {
         if (selectedGame !== "none") {
             onSelectGame(selectedGame);
+            refreshGameState(selectedGame);
         }
     };
+
+    const refreshGameClicked = () => {
+        if (selectedGame !== "none") {
+            refreshGameState(selectedGame);
+        }
+    }
 
     return (
         <div>
@@ -50,8 +59,7 @@ const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
             </select>
             <button onClick={handleSelectGame}>Select Game</button>
             <div>
-                <button onClick={refreshGameState} value={selectedGame}>Refresh Game State</button> 
-                {/* maybe dont' need the refresh button anymore */}
+                <button onClick={refreshGameClicked} value={selectedGame}>Refresh Game State</button> 
             </div>
         </div>
     );
