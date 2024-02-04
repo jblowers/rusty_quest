@@ -17,7 +17,7 @@ const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
     };
 
     // Use useEffect to fetch game list on component mount and when ipAddress changes
-    useEffect(() => {
+    useEffect((fetchGameList) => {
         fetchGameList();
     }, [ipAddress]);
 
@@ -38,6 +38,7 @@ const GameManagementComp = ({ipAddress, onSelectGame, refreshGameState}) => {
     const handleSelectGame = () => {
         if (selectedGame !== "none") {
             onSelectGame(selectedGame);
+            refreshGameState(selectedGame);
         }
     };
 

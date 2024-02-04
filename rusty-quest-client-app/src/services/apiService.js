@@ -37,11 +37,12 @@ const postData = async (ipAddress, endpoint, data, options={}) => {
     }
 };
 
-export const fetchGameState = async (ipAddress,gameId) => {
+export const fetchGameState = async (ipAddress,gameId, updateGameState) => {
     const data = await fetchData(ipAddress,`/game_state/${gameId}`);
     // Check if data has a nested gameState property and return it if present
     if (data && data.gameState) {
         console.log(`found gameState.`);
+        updateGameState(data.gameState);
         return data.gameState;
     }
     return data;

@@ -42,9 +42,9 @@ function App() {
     }
     try {
       console.log(`Fetching gamestate from ${ipAddress} / ${gameId}`);
-      const data = await ApiService.fetchGameState(ipAddress, gameId);
+      const data = await ApiService.fetchGameState(ipAddress, gameId,setGameState);
       console.log(`Game state data: ${data}`);
-      setGameState(data);
+      // setGameState(data);
     } catch (error) {
       console.error('Error fetching game state:', error);
     }
